@@ -7,7 +7,7 @@ import "./App.css";
 function App() {
   return (
     <div>
-      <Timer initialMinute={0} initialSeconds={15} />
+      <Timer />
     </div>
   );
 }
