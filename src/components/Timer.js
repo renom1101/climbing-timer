@@ -89,6 +89,15 @@ const Timer = (props) => {
     }
   }, [climbSeconds, isPlayEveryMinute, minutes, seconds]);
 
+  useEffect(() => {
+    settingsVisibilityTimer = setTimeout(
+      () => setIsSettingsVisible(false),
+      5000
+    );
+
+    return () => clearTimeout(settingsVisibilityTimer);
+  }, []);
+
   function handleUserActivity() {
     setIsSettingsVisible(true);
     clearTimeout(settingsVisibilityTimer);
