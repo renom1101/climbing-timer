@@ -10,6 +10,7 @@ const finishAudio = new Audio(
 );
 
 let timer = null;
+let settingsVisibilityTimer = null;
 
 const Timer = (props) => {
   const { climbSeconds = 240, preparationSeconds = 15 } = props;
@@ -18,6 +19,7 @@ const Timer = (props) => {
   const [isPreparationEnabled, setIsPreparationEnabled] = useState(false);
   const [isPreparationTime, setIsPreparationTime] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
+  const [isSettingsVisible, setIsSettingsVisible] = useState(true);
 
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
@@ -87,6 +89,15 @@ const Timer = (props) => {
     }
   }, [climbSeconds, isPlayEveryMinute, minutes, seconds]);
 
+  function handleUserActivity() {
+    setIsSettingsVisible(true);
+    clearTimeout(settingsVisibilityTimer);
+    settingsVisibilityTimer = setTimeout(
+      () => setIsSettingsVisible(false),
+      5000
+    );
+  }
+
   function handleStopStart() {
     if (isRunning) {
       clearInterval(timer);
@@ -115,7 +126,7 @@ const Timer = (props) => {
   }
 
   return (
-    <div>
+    <div onMouseMove={handleUserActivity}>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <h1 style={{ fontSize: "20em" }}>
           {" "}
@@ -127,6 +138,8 @@ const Timer = (props) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          opacity: isSettingsVisible ? 1 : 0,
+          transition: "all 1s",
         }}
       >
         <button
