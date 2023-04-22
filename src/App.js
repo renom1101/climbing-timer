@@ -8,7 +8,10 @@ function App() {
   return (
     <div>
       <Timer
-        initialSeconds={localStorage.getItem("initialSeconds") || undefined}
+        climbSeconds={localStorage.getItem("climbSeconds") || undefined}
+        preparationSeconds={
+          localStorage.getItem("preparationSeconds") || undefined
+        }
       />
     </div>
   );
