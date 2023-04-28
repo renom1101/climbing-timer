@@ -14,49 +14,62 @@ let settingsVisibilityTimer = null;
 
 const Timer = (props) => {
   const { climbSeconds = 240, preparationSeconds = 15 } = props;
-  const [totalSeconds, setTotalSeconds] = useState(climbSeconds);
+  const [totalMiliseconds, setTotalMiliseconds] = useState(climbSeconds * 1000);
   const [isPlayEveryMinute, setIsPlayEveryMinute] = useState(false);
   const [isPreparationEnabled, setIsPreparationEnabled] = useState(false);
   const [isPreparationTime, setIsPreparationTime] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(true);
+  const [referenceTime, setReferenceTime] = useState();
 
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
+  const minutes =
+    totalMiliseconds >= 0 ? Math.floor(totalMiliseconds / (60 * 1000)) : 0;
+  const seconds =
+    totalMiliseconds >= 0 ? Math.ceil((totalMiliseconds / 1000) % 60) : 0;
 
   function updateClimbTime() {
-    setTotalSeconds((prevSeconds) =>
-      prevSeconds > 0 ? prevSeconds - 1 : climbSeconds
+    const currentTime = Date.now();
+    const timePassed = currentTime - referenceTime;
+    setReferenceTime(currentTime);
+
+    setTotalMiliseconds((prevMiliseconds) =>
+      prevMiliseconds > 0 ? prevMiliseconds - timePassed : climbSeconds * 1000
     );
   }
 
   function updatePreparationTime() {
-    setTotalSeconds((prevSeconds) =>
-      prevSeconds > 0 ? prevSeconds - 1 : preparationSeconds
+    const currentTime = Date.now();
+    const timePassed = currentTime - referenceTime;
+    setReferenceTime(currentTime);
+
+    setTotalMiliseconds((prevMiliseconds) =>
+      prevMiliseconds > 0
+        ? prevMiliseconds - timePassed
+        : preparationSeconds * 1000
     );
   }
 
   useEffect(() => {
     if (isRunning) {
       timer = isPreparationTime
-        ? setInterval(() => updatePreparationTime(), 1000)
-        : setInterval(() => updateClimbTime(), 1000);
+        ? setInterval(updatePreparationTime, 50)
+        : setInterval(updateClimbTime, 50);
     }
 
     return () => {
       clearInterval(timer);
     };
-  }, [isRunning, isPreparationTime]);
+  }, [isRunning, isPreparationTime, referenceTime]);
 
   useEffect(() => {
-    if (totalSeconds > 0) {
+    if (totalMiliseconds > 0) {
       return;
     }
 
     setIsPreparationTime(
       (prevIsPreparationTime) => isPreparationEnabled && !prevIsPreparationTime
     );
-  }, [totalSeconds, isPreparationEnabled]);
+  }, [totalMiliseconds, isPreparationEnabled]);
 
   useEffect(() => {
     if (isPreparationTime) {
@@ -77,7 +90,7 @@ const Timer = (props) => {
       ((minutes === 1 ||
         (isPlayEveryMinute && minutes !== 0 && seconds !== climbSeconds)) &&
         seconds === 0) ||
-      (minutes === 0 && seconds < 11 && seconds > 0)
+      (minutes === 0 && seconds < 6 && seconds > 0)
     ) {
       dingAudio.pause();
       dingAudio.currentTime = 0;
@@ -115,12 +128,13 @@ const Timer = (props) => {
       return;
     }
 
+    setReferenceTime(Date.now());
     setIsRunning(true);
   }
 
   function handleReset() {
     clearInterval(timer);
-    setTotalSeconds(climbSeconds);
+    setTotalMiliseconds(climbSeconds * 1000);
     setIsRunning(false);
   }
 
