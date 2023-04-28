@@ -30,8 +30,6 @@ const Timer = (props) => {
     const timePassed = currentTime - referenceTime;
     setReferenceTime(currentTime);
 
-    console.log("aaaaaaa", currentTime, referenceTime, timePassed);
-
     setTotalMiliseconds((prevMiliseconds) =>
       prevMiliseconds > 0 ? prevMiliseconds - timePassed : climbSeconds * 1000
     );
@@ -41,8 +39,6 @@ const Timer = (props) => {
     const currentTime = Date.now();
     const timePassed = currentTime - referenceTime;
     setReferenceTime(currentTime);
-
-    console.log("aaaaaaa", currentTime, referenceTime, timePassed);
 
     setTotalMiliseconds((prevMiliseconds) =>
       prevMiliseconds > 0
