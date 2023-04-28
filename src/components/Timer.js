@@ -22,10 +22,10 @@ const Timer = (props) => {
   const [isSettingsVisible, setIsSettingsVisible] = useState(true);
   const [referenceTime, setReferenceTime] = useState();
 
-  const minutes =
-    totalMiliseconds >= 0 ? Math.floor(totalMiliseconds / (60 * 1000)) : 0;
   const seconds =
     totalMiliseconds >= 0 ? Math.ceil((totalMiliseconds / 1000) % 60) : 0;
+  const minutes =
+    totalMiliseconds >= 0 ? Math.floor(totalMiliseconds / (60 * 1000)) : 0;
 
   function updateClimbTime() {
     const currentTime = Date.now();
@@ -114,6 +114,9 @@ const Timer = (props) => {
   function handleUserActivity() {
     setIsSettingsVisible(true);
     clearTimeout(settingsVisibilityTimer);
+
+    if (!isRunning) return;
+
     settingsVisibilityTimer = setTimeout(
       () => setIsSettingsVisible(false),
       5000
@@ -148,12 +151,24 @@ const Timer = (props) => {
     );
   }
 
+  function renderMinutes() {
+    if (seconds === 60) return minutes + 1;
+
+    return minutes;
+  }
+
+  function renderSeconds() {
+    if (seconds === 60) return "00";
+
+    return seconds < 10 ? `0${seconds}` : seconds;
+  }
+
   return (
     <div onMouseMove={handleUserActivity}>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <h1 style={{ fontSize: "20em" }}>
           {" "}
-          {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+          {renderMinutes()}:{renderSeconds()}
         </h1>
       </div>
       <div
