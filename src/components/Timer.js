@@ -9,6 +9,16 @@ const finishAudio = new Audio(
   "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/finish-d95WPyLaLxuO8n4n.wav"
 );
 
+function playDing() {
+  dingAudio.pause();
+  dingAudio.currentTime = 0;
+  dingAudio.play();
+}
+
+function playFinish() {
+  finishAudio.play();
+}
+
 let timer = null;
 let settingsVisibilityTimer = null;
 
@@ -72,24 +82,20 @@ const Timer = (props) => {
   }, [totalMiliseconds, isPreparationEnabled]);
 
   useEffect(() => {
+    if (minutes === 0 && seconds === 0) {
+      playFinish();
+    }
+
     if (isPreparationTime) {
       if (minutes === 0 && seconds < 4 && seconds > 0) {
-        dingAudio.pause();
-        dingAudio.currentTime = 0;
-        dingAudio.play();
-      }
-
-      if (minutes === 0 && seconds === 0) {
-        finishAudio.play();
+        playDing();
       }
 
       return;
     }
 
     if (minutes === 0 && seconds < 6 && seconds > 0) {
-      dingAudio.pause();
-      dingAudio.currentTime = 0;
-      dingAudio.play();
+      playDing();
     }
 
     if (
@@ -97,24 +103,9 @@ const Timer = (props) => {
         (isPlayEveryMinute && minutes !== 0 && seconds !== climbSeconds)) &&
       seconds === 60
     ) {
-      dingAudio.pause();
-      dingAudio.currentTime = 0;
-      dingAudio.play();
-    }
-
-    if (minutes === 0 && seconds === 0) {
-      finishAudio.play();
+      playDing();
     }
   }, [climbSeconds, isPlayEveryMinute, minutes, seconds]);
-
-  useEffect(() => {
-    settingsVisibilityTimer = setTimeout(
-      () => setIsSettingsVisible(false),
-      5000
-    );
-
-    return () => clearTimeout(settingsVisibilityTimer);
-  }, []);
 
   function handleUserActivity() {
     setIsSettingsVisible(true);
@@ -172,7 +163,6 @@ const Timer = (props) => {
     <div onMouseMove={handleUserActivity}>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <h1 style={{ fontSize: "20em" }}>
-          {" "}
           {renderMinutes()}:{renderSeconds()}
         </h1>
       </div>
