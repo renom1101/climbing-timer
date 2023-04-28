@@ -82,6 +82,12 @@ const Timer = (props) => {
   }, [totalMiliseconds, isPreparationEnabled]);
 
   useEffect(() => {
+    if (
+      minutes * 60 + seconds === climbSeconds ||
+      (minutes + 1) * 60 + seconds === climbSeconds
+    )
+      return;
+
     if (minutes === 0 && seconds === 0) {
       playFinish();
     }
@@ -98,11 +104,7 @@ const Timer = (props) => {
       playDing();
     }
 
-    if (
-      (minutes === 0 ||
-        (isPlayEveryMinute && minutes !== 0 && seconds !== climbSeconds)) &&
-      seconds === 60
-    ) {
+    if ((minutes === 0 || isPlayEveryMinute) && seconds === 60) {
       playDing();
     }
   }, [climbSeconds, isPlayEveryMinute, minutes, seconds]);

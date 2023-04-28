@@ -8,9 +8,11 @@ function App() {
   return (
     <div>
       <Timer
-        climbSeconds={localStorage.getItem("climbSeconds") || undefined}
+        climbSeconds={
+          parseInt(localStorage.getItem("climbSeconds"), 10) || undefined
+        }
         preparationSeconds={
-          localStorage.getItem("preparationSeconds") || undefined
+          parseInt(localStorage.getItem("preparationSeconds"), 10) || undefined
         }
       />
     </div>
