@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import useScreenLock from "../hooks/useScreenLock";
+
 import "./Timer.css";
 
 const dingAudio = new Audio(
@@ -32,6 +34,8 @@ const Timer = (props) => {
   const [isSettingsVisible, setIsSettingsVisible] = useState(true);
   const [referenceTime, setReferenceTime] = useState();
 
+  const screenLock = useScreenLock();
+
   const seconds =
     totalMiliseconds >= 0 ? Math.ceil((totalMiliseconds / 1000) % 60) : 0;
   const minutes =
@@ -58,6 +62,10 @@ const Timer = (props) => {
         : preparationSeconds * 1000
     );
   }
+
+  useEffect(() => {
+    console.log("aaaaaa", screenLock.isLocked);
+  }, [screenLock.isLocked]);
 
   useEffect(() => {
     if (isRunning) {
@@ -117,24 +125,31 @@ const Timer = (props) => {
       () => setIsSettingsVisible(false),
       5000
     );
+
+    if (screenLock.isLocked) return;
+
+    screenLock.lock();
   }
 
   function handleStopStart() {
     if (isRunning) {
       clearInterval(timer);
       setIsRunning(false);
+      screenLock.release();
 
       return;
     }
 
     setReferenceTime(Date.now());
     setIsRunning(true);
+    screenLock.lock();
   }
 
   function handleReset() {
     clearInterval(timer);
     setTotalMiliseconds(climbSeconds * 1000);
     setIsRunning(false);
+    screenLock.release();
   }
 
   function handleSoundEveryMinuteChange() {
