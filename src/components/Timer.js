@@ -31,6 +31,7 @@ const Timer = (props) => {
   const [isRunning, setIsRunning] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(true);
   const [referenceTime, setReferenceTime] = useState();
+  const [startTime, setStartTime] = useState();
 
   const seconds =
     totalMiliseconds >= 0 ? Math.ceil((totalMiliseconds / 1000) % 60) : 0;
@@ -107,6 +108,17 @@ const Timer = (props) => {
     }
   }, [climbSeconds, isPlayEveryMinute, minutes, seconds, isPreparationTime]);
 
+  useEffect(() => {
+    if (!startTime) return;
+
+    const timePassed = Date.now() - startTime;
+    const minutes = Math.floor(timePassed / 1000 / 60);
+    const seconds = Math.floor((timePassed - minutes * 1000 * 60) / 1000);
+    const miliseconds = timePassed - minutes * 1000 * 60 - seconds * 1000;
+
+    console.log(startTime, `${minutes}min ${seconds}s ${miliseconds}ms`);
+  }, [minutes, startTime]);
+
   function handleUserActivity() {
     setIsSettingsVisible(true);
     clearTimeout(settingsVisibilityTimer);
@@ -127,7 +139,10 @@ const Timer = (props) => {
       return;
     }
 
-    setReferenceTime(Date.now());
+    const startTime = Date.now();
+    setReferenceTime(startTime);
+    console.log(`Started at ${startTime}`);
+    setStartTime(startTime);
     setIsRunning(true);
   }
 
