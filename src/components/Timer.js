@@ -86,11 +86,16 @@ const Timer = (props) => {
       return;
     }
 
+    if (minutes === 0 && seconds < 6 && seconds > 0) {
+      dingAudio.pause();
+      dingAudio.currentTime = 0;
+      dingAudio.play();
+    }
+
     if (
-      ((minutes === 1 ||
+      (minutes === 0 ||
         (isPlayEveryMinute && minutes !== 0 && seconds !== climbSeconds)) &&
-        seconds === 0) ||
-      (minutes === 0 && seconds < 6 && seconds > 0)
+      seconds === 60
     ) {
       dingAudio.pause();
       dingAudio.currentTime = 0;
