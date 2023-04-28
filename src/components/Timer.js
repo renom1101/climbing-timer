@@ -88,26 +88,24 @@ const Timer = (props) => {
     )
       return;
 
+    const lastSeconds = isPreparationTime ? 3 : 5;
+
+    if (minutes === 0 && seconds <= lastSeconds && seconds > 0) {
+      playDing();
+    }
+
     if (minutes === 0 && seconds === 0) {
       playFinish();
     }
 
     if (isPreparationTime) {
-      if (minutes === 0 && seconds < 4 && seconds > 0) {
-        playDing();
-      }
-
       return;
-    }
-
-    if (minutes === 0 && seconds < 6 && seconds > 0) {
-      playDing();
     }
 
     if ((minutes === 0 || isPlayEveryMinute) && seconds === 60) {
       playDing();
     }
-  }, [climbSeconds, isPlayEveryMinute, minutes, seconds]);
+  }, [climbSeconds, isPlayEveryMinute, minutes, seconds, isPreparationTime]);
 
   function handleUserActivity() {
     setIsSettingsVisible(true);
