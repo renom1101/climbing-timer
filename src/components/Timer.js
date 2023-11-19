@@ -23,7 +23,7 @@ let timer = null;
 let settingsVisibilityTimer = null;
 
 const Timer = (props) => {
-  const { climbSeconds = 240, preparationSeconds = 15 } = props;
+  const { climbSeconds = 270, preparationSeconds = 15 } = props;
   const [totalMiliseconds, setTotalMiliseconds] = useState(climbSeconds * 1000);
   const [isPlayEveryMinute, setIsPlayEveryMinute] = useState(false);
   const [isPreparationEnabled, setIsPreparationEnabled] = useState(false);
