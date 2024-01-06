@@ -6,7 +6,13 @@ import "./App.css";
 
 function App() {
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Timer
         climbSeconds={
           parseInt(localStorage.getItem("climbSeconds"), 10) || undefined

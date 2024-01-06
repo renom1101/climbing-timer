@@ -179,7 +179,7 @@ const Timer = (props) => {
   return (
     <div onMouseMove={handleUserActivity}>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <h1 style={{ fontSize: "20em" }}>
+        <h1 className="time-container">
           {renderMinutes()}:{renderSeconds()}
         </h1>
       </div>
@@ -212,6 +212,15 @@ const Timer = (props) => {
           >
             Reset
           </button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: "10px",
+          }}
+        >
           <label className="switch" style={{ marginLeft: "20px" }}>
             <input
               type="checkbox"
