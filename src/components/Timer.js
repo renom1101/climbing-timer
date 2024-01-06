@@ -249,7 +249,7 @@ const Timer = (props) => {
           className="form-inline"
         >
           <div className="form-group col-md-2">
-            <label for="climbing-seconds">Climbing seconds: </label>
+            <label htmlFor="climbing-seconds">Climbing seconds: </label>
             <input
               type="text"
               className="form-control"
@@ -259,7 +259,7 @@ const Timer = (props) => {
             />
           </div>
           <div className="form-group col-md-2">
-            <label for="preparation-seconds">Preparation seconds: </label>
+            <label htmlFor="preparation-seconds">Preparation seconds: </label>
             <input
               type="text"
               className="form-control"
