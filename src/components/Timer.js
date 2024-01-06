@@ -24,6 +24,7 @@ let settingsVisibilityTimer = null;
 
 const Timer = (props) => {
   const { climbSeconds = 270, preparationSeconds = 15 } = props;
+
   const [totalMiliseconds, setTotalMiliseconds] = useState(climbSeconds * 1000);
   const [isPlayEveryMinute, setIsPlayEveryMinute] = useState(false);
   const [isPreparationEnabled, setIsPreparationEnabled] = useState(false);
@@ -147,6 +148,22 @@ const Timer = (props) => {
     );
   }
 
+  function handleClimbSecondsChange(e) {
+    const newSeconds = parseInt(e.target.value, 10);
+
+    if (newSeconds) {
+      localStorage.setItem("climbSeconds", newSeconds);
+    }
+  }
+
+  function handlePreparationSecondsChange(e) {
+    const newSeconds = parseInt(e.target.value, 10);
+
+    if (newSeconds) {
+      localStorage.setItem("preparationSeconds", newSeconds);
+    }
+  }
+
   function renderMinutes() {
     if (seconds === 60) return minutes + 1;
 
@@ -168,47 +185,81 @@ const Timer = (props) => {
       </div>
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
           opacity: isSettingsVisible ? 1 : 0,
           transition: "all 1s",
         }}
       >
-        <button
-          type="button"
-          onClick={handleStopStart}
-          className="btn btn-green btn-sm"
-          style={{ margin: "10px" }}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          {isRunning ? "Stop" : "Start"}
-        </button>
-        <button
-          type="button"
-          onClick={handleReset}
-          className="btn btn-green btn-sm"
-          style={{ margin: "10px" }}
+          <button
+            type="button"
+            onClick={handleStopStart}
+            className="btn btn-green btn-sm"
+            style={{ margin: "10px" }}
+          >
+            {isRunning ? "Stop" : "Start"}
+          </button>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="btn btn-green btn-sm"
+            style={{ margin: "10px" }}
+          >
+            Reset
+          </button>
+          <label className="switch" style={{ marginLeft: "20px" }}>
+            <input
+              type="checkbox"
+              defaultChecked={false}
+              onChange={handleSoundEveryMinuteChange}
+            />
+            <span className="slider round"></span>
+          </label>
+          <span style={{ marginLeft: "10px" }}>Sound every minute</span>
+          <label className="switch" style={{ marginLeft: "20px" }}>
+            <input
+              type="checkbox"
+              defaultChecked={false}
+              onChange={handlePreparationTimeChange}
+            />
+            <span className="slider round"></span>
+          </label>
+          <span style={{ marginLeft: "10px" }}>Preparation time</span>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          className="form-inline"
         >
-          Reset
-        </button>
-        <label className="switch" style={{ marginLeft: "20px" }}>
-          <input
-            type="checkbox"
-            defaultChecked={false}
-            onChange={handleSoundEveryMinuteChange}
-          />
-          <span className="slider round"></span>
-        </label>
-        <span style={{ marginLeft: "10px" }}>Sound every minute</span>
-        <label className="switch" style={{ marginLeft: "20px" }}>
-          <input
-            type="checkbox"
-            defaultChecked={false}
-            onChange={handlePreparationTimeChange}
-          />
-          <span className="slider round"></span>
-        </label>
-        <span style={{ marginLeft: "10px" }}>Preparation time</span>
+          <div className="form-group col-md-2">
+            <label for="climbing-seconds">Climbing seconds: </label>
+            <input
+              type="text"
+              className="form-control"
+              id="climbing-seconds"
+              defaultValue={climbSeconds}
+              onChange={handleClimbSecondsChange}
+            />
+          </div>
+          <div className="form-group col-md-2">
+            <label for="preparation-seconds">Preparation seconds: </label>
+            <input
+              type="text"
+              className="form-control"
+              id="preparation-seconds"
+              defaultValue={preparationSeconds}
+              onChange={handlePreparationSecondsChange}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
