@@ -2,12 +2,8 @@ import { useState, useEffect } from "react";
 
 import "./Timer.css";
 
-const dingAudio = new Audio(
-  "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/ding-YNq9oZG5O9towBZ5.wav"
-);
-const finishAudio = new Audio(
-  "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/finish-d95WPyLaLxuO8n4n.wav"
-);
+const dingAudio = new Audio("ding.wav");
+const finishAudio = new Audio("finish.wav");
 
 function playDing() {
   dingAudio.pause();
