@@ -26,6 +26,5 @@ prod
 
 # firebase
 .firebase
-.github
 .firebaserc
 firebase-debug.log
