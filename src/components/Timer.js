@@ -217,7 +217,7 @@ const Timer = (props) => {
             marginBottom: "10px",
           }}
         >
-          <div className="switch" style={{ marginLeft: "20px" }}>
+          <label className="switch" style={{ marginLeft: "20px" }}>
             <input
               id="sound-every-minute-slider"
               type="checkbox"
@@ -225,14 +225,14 @@ const Timer = (props) => {
               onChange={handleSoundEveryMinuteChange}
             />
             <span className="slider round"></span>
-          </div>
+          </label>
           <label
             htmlFor="sound-every-minute-slider"
             style={{ marginLeft: "10px" }}
           >
             Sound every minute
           </label>
-          <div className="switch" style={{ marginLeft: "20px" }}>
+          <label className="switch" style={{ marginLeft: "20px" }}>
             <input
               id="preparation-time-slider"
               type="checkbox"
@@ -240,7 +240,7 @@ const Timer = (props) => {
               onChange={handlePreparationTimeChange}
             />
             <span className="slider round"></span>
-          </div>
+          </label>
           <label
             htmlFor="preparation-time-slider"
             style={{ marginLeft: "10px" }}
