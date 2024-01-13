@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 
+import dingAudioUrl from "../assets/ding.wav";
+import finishAudioUrl from "../assets/finish.wav";
 import "./Timer.css";
 
-const dingAudio = new Audio("ding.wav");
-const finishAudio = new Audio("finish.wav");
+const dingAudio = new Audio(dingAudioUrl);
+const finishAudio = new Audio(finishAudioUrl);
 
 function playDing() {
   dingAudio.pause();
@@ -15,10 +17,15 @@ function playFinish() {
   finishAudio.play();
 }
 
-let timer = null;
-let settingsVisibilityTimer = null;
+let timer: number | undefined = undefined;
+let settingsVisibilityTimer: number | undefined = undefined;
 
-const Timer = (props) => {
+type Props = {
+  climbSeconds: number;
+  preparationSeconds: number;
+}
+
+const Timer = (props: Props) => {
   const { climbSeconds = 270, preparationSeconds = 15 } = props;
 
   const [totalMiliseconds, setTotalMiliseconds] = useState(climbSeconds * 1000);
@@ -27,7 +34,7 @@ const Timer = (props) => {
   const [isPreparationTime, setIsPreparationTime] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(true);
-  const [referenceTime, setReferenceTime] = useState();
+  const [referenceTime, setReferenceTime] = useState(0);
 
   const seconds =
     totalMiliseconds >= 0 ? Math.ceil((totalMiliseconds / 1000) % 60) : 0;
@@ -144,19 +151,19 @@ const Timer = (props) => {
     );
   }
 
-  function handleClimbSecondsChange(e) {
+  function handleClimbSecondsChange(e: ChangeEvent<HTMLInputElement>) {
     const newSeconds = parseInt(e.target.value, 10);
 
     if (newSeconds) {
-      localStorage.setItem("climbSeconds", newSeconds);
+      localStorage.setItem("climbSeconds", newSeconds.toString());
     }
   }
 
-  function handlePreparationSecondsChange(e) {
+  function handlePreparationSecondsChange(e: ChangeEvent<HTMLInputElement>) {
     const newSeconds = parseInt(e.target.value, 10);
 
     if (newSeconds) {
-      localStorage.setItem("preparationSeconds", newSeconds);
+      localStorage.setItem("preparationSeconds", newSeconds.toString());
     }
   }
 
