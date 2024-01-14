@@ -182,7 +182,7 @@ const Timer = (props: Props) => {
   return (
     <div onMouseMove={handleUserActivity}>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <h1 className="time-container">
+        <h1 className="time-container font-semibold">
           {renderMinutes()}:{renderSeconds()}
         </h1>
       </div>
@@ -193,6 +193,7 @@ const Timer = (props: Props) => {
         }}
       >
         <div
+        className="space-x-2 mb-2"
           style={{
             display: "flex",
             justifyContent: "center",
@@ -200,22 +201,19 @@ const Timer = (props: Props) => {
           }}
         >
           <button
-            type="button"
             onClick={handleStopStart}
-            className="btn btn-green btn-sm"
-            style={{ margin: "10px" }}
+            className="button text-white py-2 px-4 rounded-lg"
           >
             {isRunning ? "Stop" : "Start"}
           </button>
           <button
-            type="button"
             onClick={handleReset}
-            className="btn btn-green btn-sm"
-            style={{ margin: "10px" }}
+            className="button text-white py-2 px-4 rounded-lg"
           >
             Reset
           </button>
         </div>
+
         <div
           style={{
             display: "flex",

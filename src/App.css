@@ -1,8 +1,12 @@
-html, body, #root, #root>div {
-  height: 100%
+html,
+body,
+#root,
+#root > div {
+  height: 100%;
 }
 
 .time-container {
   margin: auto;
   font-size: 30vw;
+  font-feature-settings: "tnum";
 }
