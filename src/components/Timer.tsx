@@ -197,13 +197,13 @@ const Timer = (props: Props) => {
         >
           <button
             onClick={handleStopStart}
-            className="bg-lsf-green text-white py-2 px-4 rounded-lg border border-solid border-lsf-green"
+            className="bg-lsf-green text-white py-2 px-4 rounded-lg border border-solid border-lsf-green mr-2"
           >
             {isRunning ? "Stop" : "Start"}
           </button>
           <button
             onClick={handleReset}
-            className="bg-lsf-green text-white py-2 px-4 rounded-lg border border-solid border-lsf-green"
+            className="py-2 px-4 text-lsf-green rounded-lg border border-solid border-lsf-green"
           >
             Reset
           </button>
