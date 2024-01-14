@@ -1,8 +1,10 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect } from "react";
+import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 
 import dingAudioUrl from "../assets/ding.wav";
 import finishAudioUrl from "../assets/finish.wav";
 import "./Timer.css";
+import SettingsSlideOver from "./SettingsSlideOver";
 
 const dingAudio = new Audio(dingAudioUrl);
 const finishAudio = new Audio(finishAudioUrl);
@@ -23,7 +25,7 @@ let settingsVisibilityTimer: number | undefined = undefined;
 type Props = {
   climbSeconds: number;
   preparationSeconds: number;
-}
+};
 
 const Timer = (props: Props) => {
   const { climbSeconds = 270, preparationSeconds = 15 } = props;
@@ -35,6 +37,7 @@ const Timer = (props: Props) => {
   const [isRunning, setIsRunning] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(true);
   const [referenceTime, setReferenceTime] = useState(0);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const seconds =
     totalMiliseconds >= 0 ? Math.ceil((totalMiliseconds / 1000) % 60) : 0;
@@ -151,20 +154,12 @@ const Timer = (props: Props) => {
     );
   }
 
-  function handleClimbSecondsChange(e: ChangeEvent<HTMLInputElement>) {
-    const newSeconds = parseInt(e.target.value, 10);
-
-    if (newSeconds) {
-      localStorage.setItem("climbSeconds", newSeconds.toString());
-    }
+  function handleSettingsClose() {
+    setIsSettingsOpen(false);
   }
 
-  function handlePreparationSecondsChange(e: ChangeEvent<HTMLInputElement>) {
-    const newSeconds = parseInt(e.target.value, 10);
-
-    if (newSeconds) {
-      localStorage.setItem("preparationSeconds", newSeconds.toString());
-    }
+  function handleSettingsOpen() {
+    setIsSettingsOpen(true);
   }
 
   function renderMinutes() {
@@ -193,7 +188,7 @@ const Timer = (props: Props) => {
         }}
       >
         <div
-        className="space-x-2 mb-2"
+          className="space-x-2 mb-2"
           style={{
             display: "flex",
             justifyContent: "center",
@@ -202,87 +197,34 @@ const Timer = (props: Props) => {
         >
           <button
             onClick={handleStopStart}
-            className="button text-white py-2 px-4 rounded-lg"
+            className="bg-lsf-green text-white py-2 px-4 rounded-lg border border-solid border-lsf-green"
           >
             {isRunning ? "Stop" : "Start"}
           </button>
           <button
             onClick={handleReset}
-            className="button text-white py-2 px-4 rounded-lg"
+            className="bg-lsf-green text-white py-2 px-4 rounded-lg border border-solid border-lsf-green"
           >
             Reset
           </button>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: "10px",
-          }}
-        >
-          <label className="switch" style={{ marginLeft: "20px" }}>
-            <input
-              id="sound-every-minute-slider"
-              type="checkbox"
-              defaultChecked={false}
-              onChange={handleSoundEveryMinuteChange}
-            />
-            <span className="slider round"></span>
-          </label>
-          <label
-            htmlFor="sound-every-minute-slider"
-            style={{ marginLeft: "10px" }}
+          <button
+            onClick={handleSettingsOpen}
+            className="py-2 px-4 rounded-lg border border-solid border-lsf-green"
           >
-            Sound every minute
-          </label>
-          <label className="switch" style={{ marginLeft: "20px" }}>
-            <input
-              id="preparation-time-slider"
-              type="checkbox"
-              defaultChecked={false}
-              onChange={handlePreparationTimeChange}
-            />
-            <span className="slider round"></span>
-          </label>
-          <label
-            htmlFor="preparation-time-slider"
-            style={{ marginLeft: "10px" }}
-          >
-            Preparation time
-          </label>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          className="form-inline"
-        >
-          <div className="form-group col-md-2">
-            <label htmlFor="climbing-seconds">Climbing seconds: </label>
-            <input
-              type="text"
-              className="form-control"
-              id="climbing-seconds"
-              defaultValue={climbSeconds}
-              onChange={handleClimbSecondsChange}
-            />
-          </div>
-          <div className="form-group col-md-2">
-            <label htmlFor="preparation-seconds">Preparation seconds: </label>
-            <input
-              type="text"
-              className="form-control"
-              id="preparation-seconds"
-              defaultValue={preparationSeconds}
-              onChange={handlePreparationSecondsChange}
-            />
-          </div>
+            <Cog6ToothIcon className="h-6 w-6 text-lsf-green" />
+          </button>
         </div>
       </div>
+      <SettingsSlideOver
+        isOpen={isSettingsOpen}
+        onClose={handleSettingsClose}
+        climbSeconds={climbSeconds}
+        preparationSeconds={preparationSeconds}
+        soundEveryMinute={isPlayEveryMinute}
+        isPreparationEnabled={isPreparationEnabled}
+        onSoundEveryMinuteChange={handleSoundEveryMinuteChange}
+        onIsPreparationEnabledChange={handlePreparationTimeChange}
+      />
     </div>
   );
 };

@@ -8,6 +8,9 @@ export default {
         lato: ["Lato"],
         garamond: ["Garamond"],
       },
+      colors: {
+        "lsf-green": "#015b37",
+      },
     },
   },
   plugins: [],
