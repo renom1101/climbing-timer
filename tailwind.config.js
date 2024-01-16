@@ -10,6 +10,7 @@ export default {
       },
       colors: {
         "lsf-green": "#015b37",
+        "lsf-green-light": "#1a6b4b",
       },
     },
   },

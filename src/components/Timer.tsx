@@ -5,6 +5,7 @@ import dingAudioUrl from "../assets/ding.wav";
 import finishAudioUrl from "../assets/finish.wav";
 import "./Timer.css";
 import SettingsSlideOver from "./SettingsSlideOver";
+import Button from "./ui/Button";
 
 const dingAudio = new Audio(dingAudioUrl);
 const finishAudio = new Audio(finishAudioUrl);
@@ -195,24 +196,18 @@ const Timer = (props: Props) => {
             alignItems: "center",
           }}
         >
-          <button
-            onClick={handleStopStart}
-            className="bg-lsf-green text-white py-2 px-4 rounded-lg border border-solid border-lsf-green mr-2"
-          >
+          <Button className="mr-2" onClick={handleStopStart}>
             {isRunning ? "Stop" : "Start"}
-          </button>
-          <button
-            onClick={handleReset}
-            className="py-2 px-4 text-lsf-green rounded-lg border border-solid border-lsf-green"
-          >
+          </Button>
+          <Button onClick={handleReset} styling={Button.Styling.Secondary}>
             Reset
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSettingsOpen}
-            className="py-2 px-4 rounded-lg border border-solid border-lsf-green"
+            styling={Button.Styling.Secondary}
           >
-            <Cog6ToothIcon className="h-6 w-6 text-lsf-green" />
-          </button>
+            <Cog6ToothIcon className="h-5 w-5 text-lsf-green" />
+          </Button>
         </div>
       </div>
       <SettingsSlideOver
