@@ -206,7 +206,7 @@ const Timer = (props: Props) => {
             onClick={handleSettingsOpen}
             styling={Button.Styling.Secondary}
           >
-            <Cog6ToothIcon className="h-5 w-5 text-lsf-green" />
+            <Cog6ToothIcon className="h-5 w-5 text-inherit" />
           </Button>
         </div>
       </div>

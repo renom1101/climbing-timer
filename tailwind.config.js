@@ -9,8 +9,8 @@ export default {
         garamond: ["Garamond"],
       },
       colors: {
-        "lsf-green": "#015b37",
-        "lsf-green-light": "#1a6b4b",
+        primary: "#015b37",
+        "primary-light": "#1a6b4b",
       },
     },
   },

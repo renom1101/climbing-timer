@@ -20,13 +20,13 @@ function Button({
 }: Props) {
   const stylingClasses =
     styling === ButtonStyling.Primary
-      ? classNames("bg-lsf-green", "text-white", "hover:bg-lsf-green-light")
+      ? classNames("bg-primary", "text-white", "hover:bg-primary-light")
       : classNames(
           "bg-white",
-          "text-lsf-green",
+          "text-primary",
           "ring-1",
           "ring-inset",
-          "ring-lsf-green",
+          "ring-primary",
           "hover:bg-gray-50"
         );
   return (
@@ -43,7 +43,7 @@ function Button({
         "focus-visible:outline",
         "focus-visible:outline-2",
         "focus-visible:outline-offset-2",
-        "focus-visible:outline-lsf-green",
+        "focus-visible:outline-primary",
         stylingClasses,
         className
       )}
