@@ -1,15 +1,8 @@
 import Timer from "./components/Timer";
-import "./App.css";
 
 function App() {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <div className="flex justify-center items-center">
       <Timer
         climbSeconds={
           parseInt(localStorage.getItem("climbSeconds") || "", 10) || 270

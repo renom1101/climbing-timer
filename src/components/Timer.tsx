@@ -6,6 +6,7 @@ import finishAudioUrl from "../assets/finish.wav";
 import "./Timer.css";
 import SettingsSlideOver from "./SettingsSlideOver";
 import Button from "./ui/Button";
+import classNames from "classnames";
 
 const dingAudio = new Audio(dingAudioUrl);
 const finishAudio = new Audio(finishAudioUrl);
@@ -198,27 +199,21 @@ const Timer = (props: Props) => {
     return seconds < 10 ? `0${seconds}` : seconds;
   }
 
+  const controlsContainerClasses = classNames(
+    "transition-opacity",
+    "duration-500",
+    { "opacity-0": !isSettingsVisible, "opacity-100": isSettingsVisible }
+  );
+
   return (
     <div onMouseMove={handleUserActivity}>
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div className="flex justify-center">
         <h1 className="time-container font-semibold">
           {renderMinutes()}:{renderSeconds()}
         </h1>
       </div>
-      <div
-        style={{
-          opacity: isSettingsVisible ? 1 : 0,
-          transition: "all 1s",
-        }}
-      >
-        <div
-          className="space-x-2 mb-2"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+      <div className={controlsContainerClasses}>
+        <div className="flex justify-center items-center space-x-2 mb-2">
           <Button className="mr-2" onClick={handleStopStart}>
             {isRunning ? "Stop" : "Start"}
           </Button>
