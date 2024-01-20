@@ -29,8 +29,10 @@ type Props = {
 };
 
 const Timer = (props: Props) => {
-  const { climbSeconds = 270, preparationSeconds = 15 } = props;
-
+  const [climbSeconds, setClimbSeconds] = useState(props.climbSeconds);
+  const [preparationSeconds, setPreparationSeconds] = useState(
+    props.preparationSeconds
+  );
   const [totalMiliseconds, setTotalMiliseconds] = useState(climbSeconds * 1000);
   const [isPlayEveryMinute, setIsPlayEveryMinute] = useState(false);
   const [isPreparationEnabled, setIsPreparationEnabled] = useState(false);
@@ -163,6 +165,27 @@ const Timer = (props: Props) => {
     setIsSettingsOpen(true);
   }
 
+  function updateCurrentTime(
+    newClimbSeconds?: number,
+    newPreparationSeconds?: number
+  ) {
+    if (newClimbSeconds) {
+      setClimbSeconds(newClimbSeconds);
+
+      if (!isPreparationTime && !isRunning) {
+        setTotalMiliseconds(newClimbSeconds * 1000);
+      }
+    }
+
+    if (newPreparationSeconds) {
+      setPreparationSeconds(newPreparationSeconds);
+
+      if (isPreparationTime && !isRunning) {
+        setTotalMiliseconds(newPreparationSeconds * 1000);
+      }
+    }
+  }
+
   function renderMinutes() {
     if (seconds === 60) return minutes + 1;
 
@@ -219,6 +242,7 @@ const Timer = (props: Props) => {
         isPreparationEnabled={isPreparationEnabled}
         onSoundEveryMinuteChange={handleSoundEveryMinuteChange}
         onIsPreparationEnabledChange={handlePreparationTimeChange}
+        updateCurrentTime={updateCurrentTime}
       />
     </div>
   );

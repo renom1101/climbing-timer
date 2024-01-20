@@ -11,6 +11,10 @@ type Props = {
   isPreparationEnabled: boolean;
   onSoundEveryMinuteChange: () => void;
   onIsPreparationEnabledChange: () => void;
+  updateCurrentTime: (
+    newClimbSeconds?: number,
+    newPreparationSeconds?: number
+  ) => void;
 };
 
 const SettingsSlideOver = ({
@@ -22,12 +26,14 @@ const SettingsSlideOver = ({
   isPreparationEnabled,
   onSoundEveryMinuteChange,
   onIsPreparationEnabledChange,
+  updateCurrentTime,
 }: Props) => {
   function handleClimbSecondsChange(e: ChangeEvent<HTMLInputElement>) {
     const newSeconds = parseInt(e.target.value, 10);
 
     if (newSeconds) {
       localStorage.setItem("climbSeconds", newSeconds.toString());
+      updateCurrentTime(newSeconds);
     }
   }
 
@@ -36,6 +42,7 @@ const SettingsSlideOver = ({
 
     if (newSeconds) {
       localStorage.setItem("preparationSeconds", newSeconds.toString());
+      updateCurrentTime(undefined, newSeconds);
     }
   }
 
