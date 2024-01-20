@@ -68,8 +68,9 @@ const SettingsSlideOver = ({
           <label htmlFor="climbing-seconds">Climbing seconds</label>
           <input
             type="text"
-            className="form-control"
+            name="climbing-seconds"
             id="climbing-seconds"
+            className="rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
             defaultValue={climbSeconds}
             onChange={handleClimbSecondsChange}
           />
@@ -78,7 +79,7 @@ const SettingsSlideOver = ({
           <label htmlFor="preparation-seconds">Preparation seconds</label>
           <input
             type="text"
-            className="form-control"
+            className="rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
             id="preparation-seconds"
             defaultValue={preparationSeconds}
             onChange={handlePreparationSecondsChange}
