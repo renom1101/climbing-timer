@@ -1,6 +1,7 @@
 import { ChangeEvent } from "react";
 
 import SlideOver from "./ui/SlideOver";
+import Toggle from "./ui/Toggle";
 
 type Props = {
   isOpen: boolean;
@@ -48,32 +49,22 @@ const SettingsSlideOver = ({
 
   return (
     <SlideOver title="Settings" isOpen={isOpen} onClose={onClose}>
-      <div className="space-y-2">
-        <div className="flex justify-between">
-          <label htmlFor="sound-every-minute-slider">Sound every minute</label>
-          <label className="switch">
-            <input
-              id="sound-every-minute-slider"
-              type="checkbox"
-              defaultChecked={soundEveryMinute}
-              onChange={onSoundEveryMinuteChange}
-            />
-            <span className="slider round"></span>
-          </label>
+      <div className="space-y-2 text-sm">
+        <div className="flex justify-between items-center">
+          <label>Sound every minute</label>
+          <Toggle
+            enabled={soundEveryMinute}
+            onClick={onSoundEveryMinuteChange}
+          />
         </div>
-        <div className="flex justify-between">
-          <label htmlFor="preparation-time-slider">Preparation time</label>
-          <label className="switch">
-            <input
-              id="preparation-time-slider"
-              type="checkbox"
-              defaultChecked={isPreparationEnabled}
-              onChange={onIsPreparationEnabledChange}
-            />
-            <span className="slider round"></span>
-          </label>
+        <div className="flex justify-between items-center">
+          <label>Preparation time</label>
+          <Toggle
+            enabled={isPreparationEnabled}
+            onClick={onIsPreparationEnabledChange}
+          />
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <label htmlFor="climbing-seconds">Climbing seconds</label>
           <input
             type="text"
@@ -83,7 +74,7 @@ const SettingsSlideOver = ({
             onChange={handleClimbSecondsChange}
           />
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <label htmlFor="preparation-seconds">Preparation seconds</label>
           <input
             type="text"

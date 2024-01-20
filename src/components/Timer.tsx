@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
+import classNames from "classnames";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 
 import dingAudioUrl from "../assets/ding.wav";
 import finishAudioUrl from "../assets/finish.wav";
+
 import "./Timer.css";
 import SettingsSlideOver from "./SettingsSlideOver";
 import Button from "./ui/Button";
-import classNames from "classnames";
 
 const dingAudio = new Audio(dingAudioUrl);
 const finishAudio = new Audio(finishAudioUrl);
