@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import classNames from "classnames";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 
-import "./Timer.css";
 import { playDing, playDong } from "../utils/audio";
 import SettingsSlideOver from "./SettingsSlideOver";
 import Button from "./ui/Button";
