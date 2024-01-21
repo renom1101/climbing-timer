@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 
 import { playDing, playDong } from "../utils/audio";
 import Controls from "./Controls";
+import { formatTime } from "../utils/formatTime";
+import useInterval from "../hooks/useInterval";
 
-let timer: number | undefined = undefined;
 let settingsVisibilityTimer: number | undefined = undefined;
 
 type Props = {
@@ -16,7 +17,9 @@ const Timer = (props: Props) => {
   const [preparationSeconds, setPreparationSeconds] = useState(
     props.preparationSeconds
   );
-  const [totalMiliseconds, setTotalMiliseconds] = useState(climbSeconds * 1000);
+  const [timeLeft, setTimeLeft] = useState(climbSeconds * 1000);
+  const [nextCycleTime, setNextCycleTime] = useState(climbSeconds * 1000);
+
   const [isPlayEveryMinute, setIsPlayEveryMinute] = useState(false);
   const [isPreparationEnabled, setIsPreparationEnabled] = useState(false);
   const [isPreparationTime, setIsPreparationTime] = useState(false);
@@ -24,54 +27,43 @@ const Timer = (props: Props) => {
   const [referenceTime, setReferenceTime] = useState(0);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
 
-  const seconds =
-    totalMiliseconds >= 0 ? Math.ceil((totalMiliseconds / 1000) % 60) : 0;
-  const minutes =
-    totalMiliseconds >= 0 ? Math.floor(totalMiliseconds / (60 * 1000)) : 0;
+  const seconds = timeLeft >= 0 ? Math.ceil((timeLeft / 1000) % 60) : 0;
+  const minutes = timeLeft >= 0 ? Math.floor(timeLeft / (60 * 1000)) : 0;
 
-  function updateClimbTime() {
+  function updateTime() {
     const currentTime = Date.now();
     const timePassed = currentTime - referenceTime;
-    setReferenceTime(currentTime);
 
-    setTotalMiliseconds((prevMiliseconds) =>
-      prevMiliseconds > 0 ? prevMiliseconds - timePassed : climbSeconds * 1000
+    setReferenceTime(currentTime);
+    setTimeLeft(
+      (prevTimeLeft) =>
+        prevTimeLeft - timePassed + (prevTimeLeft > 0 ? 0 : nextCycleTime)
     );
   }
 
-  function updatePreparationTime() {
-    const currentTime = Date.now();
-    const timePassed = currentTime - referenceTime;
-    setReferenceTime(currentTime);
-
-    setTotalMiliseconds((prevMiliseconds) =>
-      prevMiliseconds > 0
-        ? prevMiliseconds - timePassed
-        : preparationSeconds * 1000
-    );
-  }
+  useInterval(updateTime, isRunning ? 50 : null);
 
   useEffect(() => {
-    if (isRunning) {
-      timer = isPreparationTime
-        ? setInterval(updatePreparationTime, 50)
-        : setInterval(updateClimbTime, 50);
-    }
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, [isRunning, isPreparationTime, referenceTime]);
-
-  useEffect(() => {
-    if (totalMiliseconds > 0) {
+    if (timeLeft > 0) {
       return;
     }
 
     setIsPreparationTime(
       (prevIsPreparationTime) => isPreparationEnabled && !prevIsPreparationTime
     );
-  }, [totalMiliseconds, isPreparationEnabled]);
+
+    if (!isPreparationEnabled) {
+      setNextCycleTime(climbSeconds * 1000);
+
+      return;
+    }
+
+    setNextCycleTime((prevNextCycleTimeLeft) =>
+      prevNextCycleTimeLeft === climbSeconds * 1000
+        ? preparationSeconds * 1000
+        : climbSeconds * 1000
+    );
+  }, [timeLeft, isPreparationEnabled]);
 
   useEffect(() => {
     if (
@@ -113,7 +105,6 @@ const Timer = (props: Props) => {
 
   function handleStopStart() {
     if (isRunning) {
-      clearInterval(timer);
       setIsRunning(false);
 
       return;
@@ -124,8 +115,7 @@ const Timer = (props: Props) => {
   }
 
   function handleReset() {
-    clearInterval(timer);
-    setTotalMiliseconds(climbSeconds * 1000);
+    setTimeLeft(climbSeconds * 1000);
     setIsRunning(false);
   }
 
@@ -147,7 +137,7 @@ const Timer = (props: Props) => {
       setClimbSeconds(newClimbSeconds);
 
       if (!isPreparationTime && !isRunning) {
-        setTotalMiliseconds(newClimbSeconds * 1000);
+        setTimeLeft(newClimbSeconds * 1000);
       }
     }
 
@@ -155,28 +145,16 @@ const Timer = (props: Props) => {
       setPreparationSeconds(newPreparationSeconds);
 
       if (isPreparationTime && !isRunning) {
-        setTotalMiliseconds(newPreparationSeconds * 1000);
+        setTimeLeft(newPreparationSeconds * 1000);
       }
     }
-  }
-
-  function renderMinutes() {
-    if (seconds === 60) return minutes + 1;
-
-    return minutes;
-  }
-
-  function renderSeconds() {
-    if (seconds === 60) return "00";
-
-    return seconds < 10 ? `0${seconds}` : seconds;
   }
 
   return (
     <div onMouseMove={handleUserActivity}>
       <div className="flex justify-center">
         <h1 className="font-montserrat-mono font-semibold text-[25vw]">
-          {renderMinutes()}:{renderSeconds()}
+          {formatTime(timeLeft, nextCycleTime)}
         </h1>
       </div>
       <Controls
