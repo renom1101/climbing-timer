@@ -29,8 +29,12 @@ const Timer = ({
   const [timeLeft, setTimeLeft] = useState(climbSeconds * 1000);
   const [nextCycleTime, setNextCycleTime] = useState(climbSeconds * 1000);
 
-  const [isPlayEveryMinute, setIsPlayEveryMinute] = useState(false);
-  const [isPreparationEnabled, setIsPreparationEnabled] = useState(false);
+  const [isPlayEveryMinute, setIsPlayEveryMinute] = useState(
+    localStorage.getItem("playEveryMinute") === "true"
+  );
+  const [isPreparationEnabled, setIsPreparationEnabled] = useState(
+    localStorage.getItem("preparationEnabled") === "true"
+  );
   const [isPreparationTime, setIsPreparationTime] = useState(false);
   const [referenceTime, setReferenceTime] = useState(0);
 
@@ -88,10 +92,15 @@ const Timer = ({
   }
 
   function handleSoundEveryMinuteChange() {
+    localStorage.setItem("playEveryMinute", (!isPlayEveryMinute).toString());
     setIsPlayEveryMinute((prevIsPlayEveryMinute) => !prevIsPlayEveryMinute);
   }
 
   function handlePreparationTimeChange() {
+    localStorage.setItem(
+      "preparationEnabled",
+      (!isPreparationEnabled).toString()
+    );
     setIsPreparationEnabled(
       (prevIsPreparationTimeEnabled) => !prevIsPreparationTimeEnabled
     );
