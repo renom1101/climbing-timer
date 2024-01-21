@@ -2,25 +2,10 @@ import { useState, useEffect } from "react";
 import classNames from "classnames";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 
-import dingAudioUrl from "../assets/ding.wav";
-import finishAudioUrl from "../assets/finish.wav";
-
 import "./Timer.css";
+import { playDing, playDong } from "../utils/audio";
 import SettingsSlideOver from "./SettingsSlideOver";
 import Button from "./ui/Button";
-
-const dingAudio = new Audio(dingAudioUrl);
-const finishAudio = new Audio(finishAudioUrl);
-
-function playDing() {
-  dingAudio.pause();
-  dingAudio.currentTime = 0;
-  dingAudio.play();
-}
-
-function playFinish() {
-  finishAudio.play();
-}
 
 let timer: number | undefined = undefined;
 let settingsVisibilityTimer: number | undefined = undefined;
@@ -107,7 +92,7 @@ const Timer = (props: Props) => {
     }
 
     if (minutes === 0 && seconds === 0) {
-      playFinish();
+      playDong();
     }
 
     if (isPreparationTime) {
