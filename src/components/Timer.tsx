@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
-import { playDing, playDong } from "../utils/audio";
 import Controls from "./Controls";
 import { formatTime } from "../utils/formatTime";
 import useInterval from "../hooks/useInterval";
+import useSounds from "../hooks/useSounds";
 
 let settingsVisibilityTimer: number | undefined = undefined;
 
@@ -27,8 +27,7 @@ const Timer = (props: Props) => {
   const [referenceTime, setReferenceTime] = useState(0);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
 
-  const seconds = timeLeft >= 0 ? Math.ceil((timeLeft / 1000) % 60) : 0;
-  const minutes = timeLeft >= 0 ? Math.floor(timeLeft / (60 * 1000)) : 0;
+  useSounds(timeLeft, isPreparationTime, isPlayEveryMinute, climbSeconds);
 
   function updateTime() {
     const currentTime = Date.now();
@@ -64,32 +63,6 @@ const Timer = (props: Props) => {
         : climbSeconds * 1000
     );
   }, [timeLeft, isPreparationEnabled]);
-
-  useEffect(() => {
-    if (
-      minutes * 60 + seconds === climbSeconds ||
-      (minutes + 1) * 60 + seconds === climbSeconds
-    )
-      return;
-
-    const lastSeconds = isPreparationTime ? 3 : 5;
-
-    if (minutes === 0 && seconds <= lastSeconds && seconds > 0) {
-      playDing();
-    }
-
-    if (minutes === 0 && seconds === 0) {
-      playDong();
-    }
-
-    if (isPreparationTime) {
-      return;
-    }
-
-    if ((minutes === 0 || isPlayEveryMinute) && seconds === 60) {
-      playDing();
-    }
-  }, [climbSeconds, isPlayEveryMinute, minutes, seconds, isPreparationTime]);
 
   function handleUserActivity() {
     setIsControlsVisible(true);
