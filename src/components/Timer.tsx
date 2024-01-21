@@ -5,27 +5,34 @@ import { formatTime } from "../utils/formatTime";
 import useInterval from "../hooks/useInterval";
 import useSounds from "../hooks/useSounds";
 
-let settingsVisibilityTimer: number | undefined = undefined;
-
 type Props = {
   climbSeconds: number;
   preparationSeconds: number;
+  isRunning: boolean;
+  isControlsVisible: boolean;
+  onStart: () => void;
+  onStop: () => void;
+  updateClimbTime: (newClimbSeconds: number) => void;
+  updatePreparationTime: (newPreparationSeconds: number) => void;
 };
 
-const Timer = (props: Props) => {
-  const [climbSeconds, setClimbSeconds] = useState(props.climbSeconds);
-  const [preparationSeconds, setPreparationSeconds] = useState(
-    props.preparationSeconds
-  );
+const Timer = ({
+  climbSeconds,
+  preparationSeconds,
+  isRunning,
+  isControlsVisible,
+  onStart,
+  onStop,
+  updateClimbTime,
+  updatePreparationTime,
+}: Props) => {
   const [timeLeft, setTimeLeft] = useState(climbSeconds * 1000);
   const [nextCycleTime, setNextCycleTime] = useState(climbSeconds * 1000);
 
   const [isPlayEveryMinute, setIsPlayEveryMinute] = useState(false);
   const [isPreparationEnabled, setIsPreparationEnabled] = useState(false);
   const [isPreparationTime, setIsPreparationTime] = useState(false);
-  const [isRunning, setIsRunning] = useState(false);
   const [referenceTime, setReferenceTime] = useState(0);
-  const [isControlsVisible, setIsControlsVisible] = useState(true);
 
   useSounds(timeLeft, isPreparationTime, isPlayEveryMinute, climbSeconds);
 
@@ -64,32 +71,20 @@ const Timer = (props: Props) => {
     );
   }, [timeLeft, isPreparationEnabled]);
 
-  function handleUserActivity() {
-    setIsControlsVisible(true);
-    clearTimeout(settingsVisibilityTimer);
-
-    if (!isRunning) return;
-
-    settingsVisibilityTimer = setTimeout(
-      () => setIsControlsVisible(false),
-      5000
-    );
-  }
-
   function handleStopStart() {
     if (isRunning) {
-      setIsRunning(false);
+      onStop();
 
       return;
     }
 
     setReferenceTime(Date.now());
-    setIsRunning(true);
+    onStart();
   }
 
   function handleReset() {
     setTimeLeft(climbSeconds * 1000);
-    setIsRunning(false);
+    onStop();
   }
 
   function handleSoundEveryMinuteChange() {
@@ -107,7 +102,7 @@ const Timer = (props: Props) => {
     newPreparationSeconds?: number
   ) {
     if (newClimbSeconds) {
-      setClimbSeconds(newClimbSeconds);
+      updateClimbTime(newClimbSeconds);
 
       if (!isPreparationTime && !isRunning) {
         setTimeLeft(newClimbSeconds * 1000);
@@ -115,7 +110,7 @@ const Timer = (props: Props) => {
     }
 
     if (newPreparationSeconds) {
-      setPreparationSeconds(newPreparationSeconds);
+      updatePreparationTime(newPreparationSeconds);
 
       if (isPreparationTime && !isRunning) {
         setTimeLeft(newPreparationSeconds * 1000);
@@ -124,7 +119,7 @@ const Timer = (props: Props) => {
   }
 
   return (
-    <div onMouseMove={handleUserActivity}>
+    <div>
       <div className="flex justify-center">
         <h1 className="font-montserrat-mono font-semibold text-[25vw]">
           {formatTime(timeLeft, nextCycleTime)}
