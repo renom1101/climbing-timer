@@ -5,8 +5,7 @@ export default {
     extend: {
       fontFamily: {
         montserrat: ["Montserrat"],
-        lato: ["Lato"],
-        garamond: ["Garamond"],
+        "montserrat-mono": ["Montserrat", { fontFeatureSettings: '"tnum"' }],
       },
       colors: {
         primary: "#015b37",

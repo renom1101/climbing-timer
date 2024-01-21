@@ -194,7 +194,7 @@ const Timer = (props: Props) => {
   return (
     <div onMouseMove={handleUserActivity}>
       <div className="flex justify-center">
-        <h1 className="time-container font-semibold">
+        <h1 className="font-montserrat-mono font-semibold text-[25vw]">
           {renderMinutes()}:{renderSeconds()}
         </h1>
       </div>
