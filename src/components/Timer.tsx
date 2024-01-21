@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
-import classNames from "classnames";
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 
 import { playDing, playDong } from "../utils/audio";
-import SettingsSlideOver from "./SettingsSlideOver";
-import Button from "./ui/Button";
+import Controls from "./Controls";
 
 let timer: number | undefined = undefined;
 let settingsVisibilityTimer: number | undefined = undefined;
@@ -24,9 +21,8 @@ const Timer = (props: Props) => {
   const [isPreparationEnabled, setIsPreparationEnabled] = useState(false);
   const [isPreparationTime, setIsPreparationTime] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
-  const [isSettingsVisible, setIsSettingsVisible] = useState(true);
   const [referenceTime, setReferenceTime] = useState(0);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isControlsVisible, setIsControlsVisible] = useState(true);
 
   const seconds =
     totalMiliseconds >= 0 ? Math.ceil((totalMiliseconds / 1000) % 60) : 0;
@@ -104,13 +100,13 @@ const Timer = (props: Props) => {
   }, [climbSeconds, isPlayEveryMinute, minutes, seconds, isPreparationTime]);
 
   function handleUserActivity() {
-    setIsSettingsVisible(true);
+    setIsControlsVisible(true);
     clearTimeout(settingsVisibilityTimer);
 
     if (!isRunning) return;
 
     settingsVisibilityTimer = setTimeout(
-      () => setIsSettingsVisible(false),
+      () => setIsControlsVisible(false),
       5000
     );
   }
@@ -141,14 +137,6 @@ const Timer = (props: Props) => {
     setIsPreparationEnabled(
       (prevIsPreparationTimeEnabled) => !prevIsPreparationTimeEnabled
     );
-  }
-
-  function handleSettingsClose() {
-    setIsSettingsOpen(false);
-  }
-
-  function handleSettingsOpen() {
-    setIsSettingsOpen(true);
   }
 
   function updateCurrentTime(
@@ -184,12 +172,6 @@ const Timer = (props: Props) => {
     return seconds < 10 ? `0${seconds}` : seconds;
   }
 
-  const controlsContainerClasses = classNames(
-    "transition-opacity",
-    "duration-500",
-    { "opacity-0": !isSettingsVisible, "opacity-100": isSettingsVisible }
-  );
-
   return (
     <div onMouseMove={handleUserActivity}>
       <div className="flex justify-center">
@@ -197,29 +179,15 @@ const Timer = (props: Props) => {
           {renderMinutes()}:{renderSeconds()}
         </h1>
       </div>
-      <div className={controlsContainerClasses}>
-        <div className="flex justify-center items-center space-x-2 mb-2">
-          <Button className="mr-2" onClick={handleStopStart}>
-            {isRunning ? "Stop" : "Start"}
-          </Button>
-          <Button onClick={handleReset} styling={Button.Styling.Secondary}>
-            Reset
-          </Button>
-          <Button
-            onClick={handleSettingsOpen}
-            styling={Button.Styling.Secondary}
-          >
-            <Cog6ToothIcon className="h-5 w-5 text-inherit" />
-          </Button>
-        </div>
-      </div>
-      <SettingsSlideOver
-        isOpen={isSettingsOpen}
-        onClose={handleSettingsClose}
+      <Controls
+        isControlsVisible={isControlsVisible}
+        isRunning={isRunning}
         climbSeconds={climbSeconds}
         preparationSeconds={preparationSeconds}
         soundEveryMinute={isPlayEveryMinute}
         isPreparationEnabled={isPreparationEnabled}
+        onStopStartClick={handleStopStart}
+        onResetClick={handleReset}
         onSoundEveryMinuteChange={handleSoundEveryMinuteChange}
         onIsPreparationEnabledChange={handlePreparationTimeChange}
         updateCurrentTime={updateCurrentTime}
