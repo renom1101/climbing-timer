@@ -1,9 +1,16 @@
-function formatTime(time: number, nextTime?: number) {
-  const timeToShow = time > 0 || !nextTime ? time : nextTime
+function formatTime(
+  time: number,
+  nextTime?: number,
+  showMiliseconds: boolean = false
+) {
+  const timeToShow = time > 0 || !nextTime ? time : nextTime;
   const minutes = timeToShow >= 0 ? Math.floor(timeToShow / (60 * 1000)) : 0;
   const seconds = timeToShow >= 0 ? Math.ceil((timeToShow / 1000) % 60) : 0;
+  const miliseconds = timeToShow >= 0 ? Math.ceil(timeToShow % 1000) : 0;
 
-  return `${formatMinutes(minutes, seconds)}:${formatSeconds(seconds)}`
+  return `${formatMinutes(minutes, seconds)}:${formatSeconds(seconds)}${
+    showMiliseconds ? `.${formatMiliseconds(miliseconds)}` : ""
+  }`;
 }
 
 function formatMinutes(minutes: number, seconds: number) {
@@ -18,4 +25,14 @@ function formatSeconds(seconds: number) {
   return seconds < 10 ? `0${seconds}` : seconds;
 }
 
-export { formatTime }
+function formatMiliseconds(miliseconds: number) {
+  const roundedMiliseconds = Math.round(miliseconds / 10);
+
+  if (roundedMiliseconds === 100) return "00";
+
+  return roundedMiliseconds < 10
+    ? `0${roundedMiliseconds}`
+    : roundedMiliseconds;
+}
+
+export { formatTime };
