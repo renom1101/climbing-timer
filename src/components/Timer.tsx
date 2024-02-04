@@ -38,7 +38,13 @@ const Timer = ({
   const [isPreparationTime, setIsPreparationTime] = useState(false);
   const [referenceTime, setReferenceTime] = useState(0);
 
-  useSounds(timeLeft, isPreparationTime, isPlayEveryMinute, climbSeconds);
+  useSounds(
+    isRunning,
+    timeLeft,
+    isPreparationTime,
+    isPlayEveryMinute,
+    climbSeconds
+  );
 
   function updateTime() {
     const currentTime = Date.now();
