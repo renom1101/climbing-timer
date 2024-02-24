@@ -94,6 +94,8 @@ const Timer = ({
 
   function handleReset() {
     setTimeLeft(climbSeconds * 1000);
+    setIsPreparationTime(false);
+    setNextCycleTime(climbSeconds * 1000);
     onStop();
   }
 
