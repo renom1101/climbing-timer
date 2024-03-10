@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 
 import { playDing, playDong } from "../utils/audio";
+import useSettings from "./useSettings";
 
 export default function useSounds(
   isEnabled: boolean,
   timeLeft: number,
-  isPreparationTime: boolean,
-  isPlayEveryMinute: boolean,
-  climbSeconds: number
+  isPreparationTime: boolean
 ) {
+  const { climbSeconds, isPlayEveryMinute } = useSettings();
+
   const totalSeconds = timeLeft >= 0 ? Math.ceil(timeLeft / 1000) : 0;
 
   useEffect(() => {

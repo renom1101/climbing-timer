@@ -2,39 +2,30 @@ import { ChangeEvent } from "react";
 
 import SlideOver from "./ui/SlideOver";
 import Toggle from "./ui/Toggle";
+import useSettings from "../hooks/useSettings";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  climbSeconds: number;
-  preparationSeconds: number;
-  soundEveryMinute: boolean;
-  isPreparationEnabled: boolean;
-  onSoundEveryMinuteChange: () => void;
-  onIsPreparationEnabledChange: () => void;
-  updateCurrentTime: (
-    newClimbSeconds?: number,
-    newPreparationSeconds?: number
-  ) => void;
 };
 
-const SettingsSlideOver = ({
-  isOpen,
-  onClose,
-  climbSeconds,
-  preparationSeconds,
-  soundEveryMinute,
-  isPreparationEnabled,
-  onSoundEveryMinuteChange,
-  onIsPreparationEnabledChange,
-  updateCurrentTime,
-}: Props) => {
+const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
+  const {
+    climbSeconds,
+    preparationSeconds,
+    isPlayEveryMinute,
+    isPreparationEnabled,
+    updateClimbSeconds,
+    updatePreparationSeconds,
+    updateIsPlayEveryMinute,
+    updateIsPreparationEnabled,
+  } = useSettings();
+
   function handleClimbSecondsChange(e: ChangeEvent<HTMLInputElement>) {
     const newSeconds = parseInt(e.target.value, 10);
 
     if (newSeconds) {
-      localStorage.setItem("climbSeconds", newSeconds.toString());
-      updateCurrentTime(newSeconds);
+      updateClimbSeconds(newSeconds);
     }
   }
 
@@ -42,9 +33,16 @@ const SettingsSlideOver = ({
     const newSeconds = parseInt(e.target.value, 10);
 
     if (newSeconds) {
-      localStorage.setItem("preparationSeconds", newSeconds.toString());
-      updateCurrentTime(undefined, newSeconds);
+      updatePreparationSeconds(newSeconds);
     }
+  }
+
+  function handleIsPlayEveryMinuteChange() {
+    updateIsPlayEveryMinute(!isPlayEveryMinute);
+  }
+
+  function handleIsPreparationEnabledChange() {
+    updateIsPreparationEnabled(!isPreparationEnabled);
   }
 
   return (
@@ -53,15 +51,15 @@ const SettingsSlideOver = ({
         <div className="flex justify-between items-center">
           <label>Sound every minute</label>
           <Toggle
-            enabled={soundEveryMinute}
-            onClick={onSoundEveryMinuteChange}
+            enabled={isPlayEveryMinute}
+            onClick={handleIsPlayEveryMinuteChange}
           />
         </div>
         <div className="flex justify-between items-center">
           <label>Preparation time</label>
           <Toggle
             enabled={isPreparationEnabled}
-            onClick={onIsPreparationEnabledChange}
+            onClick={handleIsPreparationEnabledChange}
           />
         </div>
         <div className="flex justify-between items-center">
