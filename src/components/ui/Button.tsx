@@ -22,12 +22,13 @@ function Button({
     styling === ButtonStyling.Primary
       ? classNames("bg-primary", "text-white", "hover:bg-primary-light")
       : classNames(
-          "bg-white",
+          "bg-background",
           "text-primary",
           "ring-1",
           "ring-inset",
           "ring-primary",
-          "hover:bg-gray-50"
+          "hover:bg-gray-50",
+          "dark:hover:bg-gray-900"
         );
   return (
     <button

@@ -5,10 +5,12 @@ export type Settings = {
   preparationSeconds: number;
   isPlayEveryMinute: boolean;
   isPreparationEnabled: boolean;
+  isDarkModeEnabled: boolean;
   updateClimbSeconds: (climbSeconds: number) => void;
   updatePreparationSeconds: (preparationSeconds: number) => void;
   updateIsPlayEveryMinute: (playEveryMinute: boolean) => void;
   updateIsPreparationEnabled: (preparationEnabled: boolean) => void;
+  updateIsDarkModeEnabled: (isDarkModeEnabled: boolean) => void;
 };
 
 const useSettingsState = (): Settings => {
@@ -23,6 +25,9 @@ const useSettingsState = (): Settings => {
   );
   const [isPreparationEnabled, setPreparationEnabled] = useState(
     localStorage.getItem("preparationEnabled") === "true"
+  );
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(
+    localStorage.getItem("isDarkModeEnabled") === "true"
   );
 
   function updateClimbSeconds(climbSeconds: number) {
@@ -45,15 +50,22 @@ const useSettingsState = (): Settings => {
     localStorage.setItem("preparationEnabled", preparationEnabled.toString());
   }
 
+  function updateIsDarkModeEnabled(isDarkModeEnabled: boolean) {
+    setIsDarkModeEnabled(isDarkModeEnabled);
+    localStorage.setItem("isDarkModeEnabled", isDarkModeEnabled.toString());
+  }
+
   return {
     climbSeconds,
     preparationSeconds,
     isPlayEveryMinute,
     isPreparationEnabled,
+    isDarkModeEnabled,
     updateClimbSeconds,
     updatePreparationSeconds,
     updateIsPlayEveryMinute,
     updateIsPreparationEnabled,
+    updateIsDarkModeEnabled,
   };
 };
 

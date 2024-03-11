@@ -8,10 +8,13 @@ export default {
         "montserrat-mono": ["Montserrat", { fontFeatureSettings: '"tnum"' }],
       },
       colors: {
-        primary: "#015b37",
-        "primary-light": "#1a6b4b",
+        primary: "rgb(var(--color-primary) / <alpha-value>)",
+        "primary-light": "rgb(var(--color-primary-light) / <alpha-value>)",
+        background: "rgb(var(--color-background) / <alpha-value>)",
+        text: "rgb(var(--color-text) / <alpha-value>)",
       },
     },
   },
   plugins: [],
+  darkMode: "selector",
 };

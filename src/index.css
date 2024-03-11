@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    --color-primary: 1 91 55;
+    --color-primary-light: 26 107 75;
+    --color-background: 255 255 255;
+    --color-text: 0 0 0;
+  }
+
+  body[class~="dark"] {
+    --color-primary: 26 107 75;
+    --color-primary-light: 1 91 55;
+    --color-background: 0 0 0;
+    --color-text: 255 255 255;
+  }
+}
+
 html,
 body,
 #root,

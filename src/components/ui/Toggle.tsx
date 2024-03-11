@@ -12,7 +12,7 @@ export default function Toggle({ enabled, onClick }: Props) {
       checked={enabled}
       onChange={onClick}
       className={classNames(
-        enabled ? "bg-primary" : "bg-gray-200",
+        enabled ? "bg-primary" : "bg-gray-200 dark:bg-gray-800",
         "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       )}
     >

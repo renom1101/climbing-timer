@@ -15,10 +15,12 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
     preparationSeconds,
     isPlayEveryMinute,
     isPreparationEnabled,
+    isDarkModeEnabled,
     updateClimbSeconds,
     updatePreparationSeconds,
     updateIsPlayEveryMinute,
     updateIsPreparationEnabled,
+    updateIsDarkModeEnabled,
   } = useSettings();
 
   function handleClimbSecondsChange(e: ChangeEvent<HTMLInputElement>) {
@@ -45,6 +47,10 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
     updateIsPreparationEnabled(!isPreparationEnabled);
   }
 
+  function handleIsDarkModeEnabledChange() {
+    updateIsDarkModeEnabled(!isDarkModeEnabled);
+  }
+
   return (
     <SlideOver title="Settings" isOpen={isOpen} onClose={onClose}>
       <div className="space-y-2 text-sm">
@@ -68,7 +74,7 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
             type="text"
             name="climbing-seconds"
             id="climbing-seconds"
-            className="rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+            className="rounded-md border-0 pl-2 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
             defaultValue={climbSeconds}
             onChange={handleClimbSecondsChange}
           />
@@ -77,10 +83,17 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
           <label htmlFor="preparation-seconds">Preparation seconds</label>
           <input
             type="text"
-            className="rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+            className="rounded-md border-0 pl-2 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
             id="preparation-seconds"
             defaultValue={preparationSeconds}
             onChange={handlePreparationSecondsChange}
+          />
+        </div>
+        <div className="flex justify-between items-center">
+          <label>Dark mode</label>
+          <Toggle
+            enabled={isDarkModeEnabled}
+            onClick={handleIsDarkModeEnabledChange}
           />
         </div>
       </div>
