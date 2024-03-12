@@ -1,7 +1,7 @@
 function formatTime(time: number, showMiliseconds: boolean = false) {
-  const minutes = time >= 0 ? Math.floor(time / (60 * 1000)) : 0;
-  const seconds = time >= 0 ? Math.ceil((time / 1000) % 60) : 0;
-  const miliseconds = time >= 0 ? Math.ceil(time % 1000) : 0;
+  const minutes = Math.floor(time / (60 * 1000));
+  const seconds = Math.ceil((time / 1000) % 60);
+  const miliseconds = Math.ceil(time % 1000);
 
   return `${formatMinutes(minutes, seconds)}:${formatSeconds(seconds)}${
     showMiliseconds ? `.${formatMiliseconds(miliseconds)}` : ""
