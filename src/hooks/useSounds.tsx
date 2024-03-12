@@ -11,20 +11,23 @@ export default function useSounds(
 ) {
   const { climbSeconds, isPlayEveryMinute } = useSettings();
 
-  const totalSeconds = timeLeft >= 0 ? Math.ceil(timeLeft / 1000) : 0;
+  const totalSeconds = Math.ceil(timeLeft / 1000);
+
+  useEffect(() => {
+    if (!isEnabled) return;
+    if (!isCycleFinished) return;
+
+    playDong();
+  }, [isCycleFinished]);
 
   useEffect(() => {
     if (!isEnabled) return;
 
     const lastSeconds = isPreparationTime ? 3 : 5;
 
-    if (totalSeconds <= lastSeconds && totalSeconds > 0) {
-      playDing();
-    }
+    if (totalSeconds > lastSeconds) return;
 
-    if (isCycleFinished) {
-      playDong();
-    }
+    playDing();
   }, [totalSeconds]);
 
   useEffect(() => {
