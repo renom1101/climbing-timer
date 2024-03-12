@@ -6,7 +6,8 @@ import useSettings from "./useSettings";
 export default function useSounds(
   isEnabled: boolean,
   timeLeft: number,
-  isPreparationTime: boolean
+  isPreparationTime: boolean,
+  isCycleFinished: boolean
 ) {
   const { climbSeconds, isPlayEveryMinute } = useSettings();
 
@@ -21,7 +22,7 @@ export default function useSounds(
       playDing();
     }
 
-    if (totalSeconds === 0) {
+    if (isCycleFinished) {
       playDong();
     }
   }, [totalSeconds]);

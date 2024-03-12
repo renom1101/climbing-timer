@@ -12,8 +12,9 @@ const useTimer = () => {
   const [timeLeft, setTimeLeft] = useState(climbSeconds * 1000);
   const [isPreparationTime, setIsPreparationTime] = useState(false);
   const [referenceTime, setReferenceTime] = useState(0);
+  const [isCycleFinished, setIsCycleFinished] = useState(false);
 
-  useSounds(isRunning, timeLeft, isPreparationTime);
+  useSounds(isRunning, timeLeft, isPreparationTime, isCycleFinished);
 
   useEffect(() => {
     if (isRunning) return;
@@ -27,11 +28,17 @@ const useTimer = () => {
     const newTimeLeft = timeLeft - timePassed;
 
     setReferenceTime(currentTime);
+
+    if (isCycleFinished) {
+      setIsCycleFinished(false);
+    }
+
     if (newTimeLeft > 0) {
       setTimeLeft(newTimeLeft);
       return;
     }
 
+    setIsCycleFinished(true);
     const nextCycleTime = getNextCycleTime();
     setTimeLeft(nextCycleTime + newTimeLeft);
     setIsPreparationTime(
