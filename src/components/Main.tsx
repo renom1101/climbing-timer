@@ -6,14 +6,32 @@ import SettingsSlideOver from "./SettingsSlideOver";
 import useTimer from "../hooks/useTimer";
 import useSettings from "../hooks/useSettings";
 
-let settingsVisibilityTimer: number | undefined = undefined;
+let settingsVisibilityTimer: NodeJS.Timeout | undefined = undefined;
 
 function Main() {
   const { isRunning, startTimer, stopTimer, resetTimer, timeLeft } = useTimer();
-  const { isDarkModeEnabled } = useSettings();
+  const { isDarkModeEnabled, climbSeconds, startTimestamp, isTimerOwner } =
+    useSettings();
 
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  function reduceTime(time: number): number {
+    return time < climbSeconds * 1000
+      ? time
+      : reduceTime(time - climbSeconds * 1000);
+  }
+
+  useEffect(() => {
+    if (startTimestamp) {
+      const timePassed = reduceTime(Date.now() - startTimestamp);
+
+      console.log("startTimestamp", startTimestamp, timePassed);
+      startTimer(startTimestamp, timePassed);
+    } else {
+      stopTimer();
+    }
+  }, [startTimestamp]);
 
   useEffect(() => {
     if (isDarkModeEnabled) {
@@ -42,6 +60,14 @@ function Main() {
 
   function handleSettingsOpen() {
     setIsSettingsOpen(true);
+  }
+
+  if (!isTimerOwner) {
+    return (
+      <div className="flex justify-center items-center bg-background">
+        <TimerDisplay timeLeft={timeLeft} />
+      </div>
+    );
   }
 
   return (

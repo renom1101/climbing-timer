@@ -1,4 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import {
+  getTimerById,
+  getTimerByUserId,
+  createNewTimer,
+  updateTimer,
+} from "../data/supabase/timers";
+import useSession from "../hooks/useSession";
 
 export type Settings = {
   climbSeconds: number;
@@ -6,14 +14,21 @@ export type Settings = {
   isPlayEveryMinute: boolean;
   isPreparationEnabled: boolean;
   isDarkModeEnabled: boolean;
+  isTimerOwner: boolean;
+  startTimestamp: number | null;
   updateClimbSeconds: (climbSeconds: number) => void;
   updatePreparationSeconds: (preparationSeconds: number) => void;
   updateIsPlayEveryMinute: (playEveryMinute: boolean) => void;
   updateIsPreparationEnabled: (preparationEnabled: boolean) => void;
   updateIsDarkModeEnabled: (isDarkModeEnabled: boolean) => void;
+  updateTimestamp: (timestamp?: number) => void;
 };
 
 const useSettingsState = (): Settings => {
+  const { userId } = useSession();
+  const [isTimerOwner, setIsTimerOwner] = useState(false);
+  const [startTimestamp, setStartTimestamp] = useState<number | null>(null);
+
   const [climbSeconds, setClimbSeconds] = useState(
     parseInt(localStorage.getItem("climbSeconds") || "", 10) || 270
   );
@@ -55,17 +70,57 @@ const useSettingsState = (): Settings => {
     localStorage.setItem("isDarkModeEnabled", isDarkModeEnabled.toString());
   }
 
+  async function updateTimestamp(timestamp?: number) {
+    const timerId = window.location.pathname.substring(1);
+
+    await updateTimer({
+      id: timerId,
+      start_timestamp: timestamp ?? null,
+    });
+  }
+
+  async function getTimers() {
+    if (!userId) return;
+
+    const timerId = window.location.pathname.substring(1);
+
+    let timer: TimerModel | undefined = undefined;
+
+    if (timerId) timer = await getTimerById(timerId);
+
+    if (!timer) timer = await getTimerByUserId(userId);
+
+    if (!timer) timer = await createNewTimer();
+
+    if (!timer) return;
+
+    window.history.replaceState(null, "", timer.id);
+
+    setIsTimerOwner(timer.host_id === userId);
+    setStartTimestamp(timer.start_timestamp);
+    updateClimbSeconds(timer.climbing_seconds);
+    updatePreparationSeconds(timer.preparation_seconds);
+    updateIsPreparationEnabled(timer.preparation_enabled);
+  }
+
+  useEffect(() => {
+    getTimers();
+  }, [userId]);
+
   return {
     climbSeconds,
     preparationSeconds,
     isPlayEveryMinute,
     isPreparationEnabled,
     isDarkModeEnabled,
+    isTimerOwner,
+    startTimestamp,
     updateClimbSeconds,
     updatePreparationSeconds,
     updateIsPlayEveryMinute,
     updateIsPreparationEnabled,
     updateIsDarkModeEnabled,
+    updateTimestamp,
   };
 };
 
