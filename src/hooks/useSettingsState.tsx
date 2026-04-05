@@ -16,33 +16,35 @@ export type Settings = {
   isDarkModeEnabled: boolean;
   isTimerOwner: boolean;
   startTimestamp: number | null;
+  stopTimestamp: number | null;
   updateClimbSeconds: (climbSeconds: number) => void;
   updatePreparationSeconds: (preparationSeconds: number) => void;
   updateIsPlayEveryMinute: (playEveryMinute: boolean) => void;
   updateIsPreparationEnabled: (preparationEnabled: boolean) => void;
   updateIsDarkModeEnabled: (isDarkModeEnabled: boolean) => void;
-  updateTimestamp: (timestamp?: number) => void;
+  updateTimestamps: (startTimestamp?: number, stopTimestamp?: number) => void;
 };
 
 const useSettingsState = (): Settings => {
   const { userId } = useSession();
   const [isTimerOwner, setIsTimerOwner] = useState(false);
   const [startTimestamp, setStartTimestamp] = useState<number | null>(null);
+  const [stopTimestamp, setStopTimestamp] = useState<number | null>(null);
 
   const [climbSeconds, setClimbSeconds] = useState(
-    parseInt(localStorage.getItem("climbSeconds") || "", 10) || 270
+    parseInt(localStorage.getItem("climbSeconds") || "", 10) || 270,
   );
   const [preparationSeconds, setPreparationSeconds] = useState(
-    parseInt(localStorage.getItem("preparationSeconds") || "", 10) || 15
+    parseInt(localStorage.getItem("preparationSeconds") || "", 10) || 15,
   );
   const [isPlayEveryMinute, setPlayEveryMinute] = useState(
-    localStorage.getItem("playEveryMinute") === "true"
+    localStorage.getItem("playEveryMinute") === "true",
   );
   const [isPreparationEnabled, setPreparationEnabled] = useState(
-    localStorage.getItem("preparationEnabled") === "true"
+    localStorage.getItem("preparationEnabled") === "true",
   );
   const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(
-    localStorage.getItem("isDarkModeEnabled") === "true"
+    localStorage.getItem("isDarkModeEnabled") === "true",
   );
 
   function updateClimbSeconds(climbSeconds: number) {
@@ -70,12 +72,19 @@ const useSettingsState = (): Settings => {
     localStorage.setItem("isDarkModeEnabled", isDarkModeEnabled.toString());
   }
 
-  async function updateTimestamp(timestamp?: number) {
+  async function updateTimestamps(
+    startTimestamp?: number,
+    stopTimestamp?: number,
+  ) {
+    setStartTimestamp(startTimestamp ?? null);
+    setStopTimestamp(stopTimestamp ?? null);
+
     const timerId = window.location.pathname.substring(1);
 
     await updateTimer({
       id: timerId,
-      start_timestamp: timestamp ?? null,
+      start_timestamp: startTimestamp ?? null,
+      stop_timestamp: stopTimestamp ?? null,
     });
   }
 
@@ -98,6 +107,7 @@ const useSettingsState = (): Settings => {
 
     setIsTimerOwner(timer.host_id === userId);
     setStartTimestamp(timer.start_timestamp);
+    setStopTimestamp(timer.stop_timestamp);
     updateClimbSeconds(timer.climbing_seconds);
     updatePreparationSeconds(timer.preparation_seconds);
     updateIsPreparationEnabled(timer.preparation_enabled);
@@ -115,12 +125,13 @@ const useSettingsState = (): Settings => {
     isDarkModeEnabled,
     isTimerOwner,
     startTimestamp,
+    stopTimestamp,
     updateClimbSeconds,
     updatePreparationSeconds,
     updateIsPlayEveryMinute,
     updateIsPreparationEnabled,
     updateIsDarkModeEnabled,
-    updateTimestamp,
+    updateTimestamps,
   };
 };
 

@@ -6,12 +6,18 @@ import SettingsSlideOver from "./SettingsSlideOver";
 import useTimer from "../hooks/useTimer";
 import useSettings from "../hooks/useSettings";
 
-let settingsVisibilityTimer: NodeJS.Timeout | undefined = undefined;
+let settingsVisibilityTimer: ReturnType<typeof setTimeout> | undefined =
+  undefined;
 
 function Main() {
   const { isRunning, startTimer, stopTimer, resetTimer, timeLeft } = useTimer();
-  const { isDarkModeEnabled, climbSeconds, startTimestamp, isTimerOwner } =
-    useSettings();
+  const {
+    isDarkModeEnabled,
+    climbSeconds,
+    startTimestamp,
+    isTimerOwner,
+    stopTimestamp,
+  } = useSettings();
 
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -23,15 +29,19 @@ function Main() {
   }
 
   useEffect(() => {
-    if (startTimestamp) {
-      const timePassed = reduceTime(Date.now() - startTimestamp);
+    // Only sync state from database for spectators (non-owners)
+    // Owners control the timer directly via buttons
+    if (isTimerOwner) return;
 
-      console.log("startTimestamp", startTimestamp, timePassed);
-      startTimer(startTimestamp, timePassed);
-    } else {
-      stopTimer();
+    // Spectators: sync timer state from database timestamps
+    if (startTimestamp && !stopTimestamp) {
+      const timePassed = reduceTime(Date.now() - startTimestamp);
+      startTimer(timePassed);
+    } else if (startTimestamp && stopTimestamp) {
+      const timePassed = reduceTime(stopTimestamp - startTimestamp);
+      stopTimer(timePassed);
     }
-  }, [startTimestamp]);
+  }, [startTimestamp, stopTimestamp, isTimerOwner]);
 
   useEffect(() => {
     if (isDarkModeEnabled) {
@@ -50,7 +60,7 @@ function Main() {
 
     settingsVisibilityTimer = setTimeout(
       () => setIsControlsVisible(false),
-      5000
+      5000,
     );
   }
 

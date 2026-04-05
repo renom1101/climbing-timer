@@ -9,7 +9,9 @@ const useTimer = () => {
     climbSeconds,
     preparationSeconds,
     isPreparationEnabled,
-    updateTimestamp,
+    startTimestamp,
+    updateTimestamps,
+    isTimerOwner,
   } = useSettings();
 
   const [isRunning, setIsRunning] = useState(false);
@@ -17,7 +19,6 @@ const useTimer = () => {
   const [isPreparationTime, setIsPreparationTime] = useState(false);
   const [referenceTime, setReferenceTime] = useState(0);
   const [isCycleFinished, setIsCycleFinished] = useState(false);
-  const [startTimestamp, setStartTimestamp] = useState<number>();
 
   useSounds(isRunning, timeLeft, isPreparationTime, isCycleFinished);
 
@@ -26,10 +27,6 @@ const useTimer = () => {
 
     resetTimer();
   }, [climbSeconds]);
-
-  useEffect(() => {
-    console.log("aaaaaa", startTimestamp);
-  }, [startTimestamp]);
 
   function updateTime() {
     const currentTime = Date.now();
@@ -51,7 +48,7 @@ const useTimer = () => {
     const nextCycleTime = getNextCycleTime();
     setTimeLeft(nextCycleTime + newTimeLeft);
     setIsPreparationTime(
-      (prevIsPreparationTime) => isPreparationEnabled && !prevIsPreparationTime
+      (prevIsPreparationTime) => isPreparationEnabled && !prevIsPreparationTime,
     );
   }
 
@@ -65,22 +62,32 @@ const useTimer = () => {
     return isPreparationTime ? climbSeconds * 1000 : preparationSeconds * 1000;
   }
 
-  function startTimer(startTimestamp?: number, timePassed?: number) {
+  function startTimer(timePassed?: number) {
     const now = Date.now();
     setReferenceTime(now);
-    setStartTimestamp(startTimestamp || now);
     setTimeLeft(
-      timePassed ? climbSeconds * 1000 - timePassed : climbSeconds * 1000
+      timePassed ? climbSeconds * 1000 - timePassed : climbSeconds * 1000,
     );
     setIsRunning(true);
 
-    updateTimestamp(now);
+    if (!isTimerOwner) return;
+
+    updateTimestamps(now, undefined);
   }
 
-  function stopTimer() {
+  function stopTimer(timePassed?: number) {
+    const now = Date.now();
     setIsRunning(false);
 
-    updateTimestamp(undefined);
+    if (!isTimerOwner) {
+      setTimeLeft(
+        timePassed ? climbSeconds * 1000 - timePassed : climbSeconds * 1000,
+      );
+
+      return;
+    }
+
+    updateTimestamps(startTimestamp ?? undefined, now);
   }
 
   function resetTimer() {
@@ -88,7 +95,9 @@ const useTimer = () => {
     setIsPreparationTime(false);
     setIsRunning(false);
 
-    updateTimestamp(undefined);
+    if (!isTimerOwner) return;
+
+    updateTimestamps(undefined, undefined);
   }
 
   return {
