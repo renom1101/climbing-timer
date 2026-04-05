@@ -65,12 +65,16 @@ const useTimer = () => {
   function startTimer(timePassed?: number) {
     const now = Date.now();
     setReferenceTime(now);
-    setTimeLeft(
-      timePassed ? climbSeconds * 1000 - timePassed : climbSeconds * 1000,
-    );
+
     setIsRunning(true);
 
-    if (!isTimerOwner) return;
+    if (!isTimerOwner) {
+      setTimeLeft(
+        timePassed ? climbSeconds * 1000 - timePassed : climbSeconds * 1000,
+      );
+
+      return;
+    }
 
     updateTimestamps(now, undefined);
   }
