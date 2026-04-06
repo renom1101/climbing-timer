@@ -39,17 +39,26 @@ const useSettingsState = (): Settings => {
     number | null
   >(null);
 
-  const [climbSeconds, setClimbSeconds] = useState(270);
-  const [preparationSeconds, setPreparationSeconds] = useState(10);
+  const [climbSeconds, setClimbSeconds] = useState(
+    parseInt(localStorage.getItem("climbSeconds") || "", 10) || 270,
+  );
+  const [preparationSeconds, setPreparationSeconds] = useState(
+    parseInt(localStorage.getItem("preparationSeconds") || "", 10) || 15,
+  );
   const [isPlayEveryMinute, setPlayEveryMinute] = useState(
     localStorage.getItem("playEveryMinute") === "true",
   );
-  const [isPreparationEnabled, setPreparationEnabled] = useState(false);
+  const [isPreparationEnabled, setPreparationEnabled] = useState(
+    localStorage.getItem("preparationEnabled") === "true",
+  );
   const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(
     localStorage.getItem("isDarkModeEnabled") === "true",
   );
 
   function updateClimbSeconds(climbSeconds: number) {
+    setClimbSeconds(climbSeconds);
+    localStorage.setItem("climbSeconds", climbSeconds.toString());
+
     const timerId = window.location.pathname.substring(1);
     updateTimer({
       id: timerId,
@@ -58,6 +67,9 @@ const useSettingsState = (): Settings => {
   }
 
   function updatePreparationSeconds(preparationSeconds: number) {
+    setPreparationSeconds(preparationSeconds);
+    localStorage.setItem("preparationSeconds", preparationSeconds.toString());
+
     const timerId = window.location.pathname.substring(1);
     updateTimer({
       id: timerId,
@@ -71,6 +83,9 @@ const useSettingsState = (): Settings => {
   }
 
   function updateIsPreparationEnabled(preparationEnabled: boolean) {
+    setPreparationEnabled(preparationEnabled);
+    localStorage.setItem("preparationEnabled", preparationEnabled.toString());
+
     const timerId = window.location.pathname.substring(1);
     updateTimer({
       id: timerId,
