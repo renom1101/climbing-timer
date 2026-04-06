@@ -10,7 +10,9 @@ const useTimer = () => {
     preparationSeconds,
     isPreparationEnabled,
     startTimestamp,
-    updateTimestamps,
+    isPreparationTime: dbIsPreparationTime,
+    stopTimeMilliseconds,
+    updateTimerState,
     isTimerOwner,
   } = useSettings();
 
@@ -27,6 +29,34 @@ const useTimer = () => {
 
     resetTimer();
   }, [climbSeconds]);
+
+  // Sync isPreparationTime from database when it changes
+  useEffect(() => {
+    setIsPreparationTime(dbIsPreparationTime);
+  }, [dbIsPreparationTime]);
+
+  // When paused state is loaded from DB, restore frozen display time
+  useEffect(() => {
+    if (stopTimeMilliseconds !== null) {
+      setTimeLeft(stopTimeMilliseconds);
+    }
+  }, [stopTimeMilliseconds]);
+
+  // When phase changes and timer is running, update database
+  useEffect(() => {
+    if (!isRunning || !isTimerOwner) return;
+
+    if (isPreparationTime !== dbIsPreparationTime) {
+      updateTimerState(startTimestamp, isPreparationTime, null);
+    }
+  }, [
+    isPreparationTime,
+    dbIsPreparationTime,
+    isRunning,
+    isTimerOwner,
+    startTimestamp,
+    updateTimerState,
+  ]);
 
   function updateTime() {
     const currentTime = Date.now();
@@ -65,7 +95,6 @@ const useTimer = () => {
   function startTimer(timePassed?: number) {
     const now = Date.now();
     setReferenceTime(now);
-
     setIsRunning(true);
 
     if (!isTimerOwner) {
@@ -76,22 +105,22 @@ const useTimer = () => {
       return;
     }
 
-    updateTimestamps(now, undefined);
+    // If resuming from stopped state, adjust startTimestamp to account for pause
+    let newStartTimestamp = now;
+    if (startTimestamp && stopTimeMilliseconds !== null) {
+      // Resume: recalculate startTimestamp so display stays frozen
+      newStartTimestamp = now - (climbSeconds * 1000 - stopTimeMilliseconds);
+    }
+    updateTimerState(newStartTimestamp, dbIsPreparationTime, null);
   }
 
-  function stopTimer(timePassed?: number) {
-    const now = Date.now();
+  function stopTimer() {
     setIsRunning(false);
 
-    if (!isTimerOwner) {
-      setTimeLeft(
-        timePassed ? climbSeconds * 1000 - timePassed : climbSeconds * 1000,
-      );
-
-      return;
+    if (isTimerOwner) {
+      // Save frozen display time when stopping
+      updateTimerState(startTimestamp, isPreparationTime, timeLeft);
     }
-
-    updateTimestamps(startTimestamp ?? undefined, now);
   }
 
   function resetTimer() {
@@ -99,9 +128,9 @@ const useTimer = () => {
     setIsPreparationTime(false);
     setIsRunning(false);
 
-    if (!isTimerOwner) return;
-
-    updateTimestamps(undefined, undefined);
+    if (isTimerOwner) {
+      updateTimerState(null, false, null);
+    }
   }
 
   return {

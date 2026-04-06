@@ -16,7 +16,7 @@ function Main() {
     climbSeconds,
     startTimestamp,
     isTimerOwner,
-    stopTimestamp,
+    stopTimeMilliseconds,
   } = useSettings();
 
   const [isControlsVisible, setIsControlsVisible] = useState(true);
@@ -33,15 +33,17 @@ function Main() {
     // Owners control the timer directly via buttons
     if (isTimerOwner) return;
 
-    // Spectators: sync timer state from database timestamps
-    if (startTimestamp && !stopTimestamp) {
+    // Spectators: sync timer state from database
+    // isRunning = startTimestamp !== null && stopTimeMilliseconds === null
+    if (startTimestamp && stopTimeMilliseconds === null) {
+      // Timer is running - calculate time passed
       const timePassed = reduceTime(Date.now() - startTimestamp);
       startTimer(timePassed);
-    } else if (startTimestamp && stopTimestamp) {
-      const timePassed = reduceTime(stopTimestamp - startTimestamp);
-      stopTimer(timePassed);
+    } else if (startTimestamp && stopTimeMilliseconds !== null) {
+      // Timer is paused - show frozen time
+      stopTimer();
     }
-  }, [startTimestamp, stopTimestamp, isTimerOwner]);
+  }, [startTimestamp, stopTimeMilliseconds, isTimerOwner, startTimer, stopTimer, reduceTime]);
 
   useEffect(() => {
     if (isDarkModeEnabled) {

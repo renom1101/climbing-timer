@@ -16,20 +16,26 @@ export type Settings = {
   isDarkModeEnabled: boolean;
   isTimerOwner: boolean;
   startTimestamp: number | null;
-  stopTimestamp: number | null;
+  isPreparationTime: boolean;
+  stopTimeMilliseconds: number | null;
   updateClimbSeconds: (climbSeconds: number) => void;
   updatePreparationSeconds: (preparationSeconds: number) => void;
   updateIsPlayEveryMinute: (playEveryMinute: boolean) => void;
   updateIsPreparationEnabled: (preparationEnabled: boolean) => void;
   updateIsDarkModeEnabled: (isDarkModeEnabled: boolean) => void;
-  updateTimestamps: (startTimestamp?: number, stopTimestamp?: number) => void;
+  updateTimerState: (
+    startTimestamp?: number | null,
+    isPreparationTime?: boolean,
+    stopTimeMilliseconds?: number | null,
+  ) => void;
 };
 
 const useSettingsState = (): Settings => {
   const { userId } = useSession();
   const [isTimerOwner, setIsTimerOwner] = useState(false);
   const [startTimestamp, setStartTimestamp] = useState<number | null>(null);
-  const [stopTimestamp, setStopTimestamp] = useState<number | null>(null);
+  const [isPreparationTime, setIsPreparationTime] = useState(false);
+  const [stopTimeMilliseconds, setStopTimeMilliseconds] = useState<number | null>(null);
 
   const [climbSeconds, setClimbSeconds] = useState(
     parseInt(localStorage.getItem("climbSeconds") || "", 10) || 270,
@@ -72,19 +78,24 @@ const useSettingsState = (): Settings => {
     localStorage.setItem("isDarkModeEnabled", isDarkModeEnabled.toString());
   }
 
-  async function updateTimestamps(
-    startTimestamp?: number,
-    stopTimestamp?: number,
+  async function updateTimerState(
+    startTimestamp?: number | null,
+    isPreparationTime?: boolean,
+    stopTimeMilliseconds?: number | null,
   ) {
     setStartTimestamp(startTimestamp ?? null);
-    setStopTimestamp(stopTimestamp ?? null);
+    if (isPreparationTime !== undefined) {
+      setIsPreparationTime(isPreparationTime);
+    }
+    setStopTimeMilliseconds(stopTimeMilliseconds ?? null);
 
     const timerId = window.location.pathname.substring(1);
 
     await updateTimer({
       id: timerId,
       start_timestamp: startTimestamp ?? null,
-      stop_timestamp: stopTimestamp ?? null,
+      is_preparation_time: isPreparationTime,
+      stop_time_milliseconds: stopTimeMilliseconds ?? null,
     });
   }
 
@@ -107,7 +118,8 @@ const useSettingsState = (): Settings => {
 
     setIsTimerOwner(timer.host_id === userId);
     setStartTimestamp(timer.start_timestamp);
-    setStopTimestamp(timer.stop_timestamp);
+    setIsPreparationTime(timer.is_preparation_time);
+    setStopTimeMilliseconds(timer.stop_time_milliseconds);
     updateClimbSeconds(timer.climbing_seconds);
     updatePreparationSeconds(timer.preparation_seconds);
     updateIsPreparationEnabled(timer.preparation_enabled);
@@ -125,13 +137,14 @@ const useSettingsState = (): Settings => {
     isDarkModeEnabled,
     isTimerOwner,
     startTimestamp,
-    stopTimestamp,
+    isPreparationTime,
+    stopTimeMilliseconds,
     updateClimbSeconds,
     updatePreparationSeconds,
     updateIsPlayEveryMinute,
     updateIsPreparationEnabled,
     updateIsDarkModeEnabled,
-    updateTimestamps,
+    updateTimerState,
   };
 };
 
