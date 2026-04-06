@@ -43,7 +43,7 @@ function Main() {
       // Timer is paused - show frozen time
       stopTimer();
     }
-  }, [startTimestamp, stopTimeMilliseconds, isTimerOwner, startTimer, stopTimer, reduceTime]);
+  }, [startTimestamp, stopTimeMilliseconds, isTimerOwner]);
 
   useEffect(() => {
     if (isDarkModeEnabled) {

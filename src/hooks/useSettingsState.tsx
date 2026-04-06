@@ -35,32 +35,34 @@ const useSettingsState = (): Settings => {
   const [isTimerOwner, setIsTimerOwner] = useState(false);
   const [startTimestamp, setStartTimestamp] = useState<number | null>(null);
   const [isPreparationTime, setIsPreparationTime] = useState(false);
-  const [stopTimeMilliseconds, setStopTimeMilliseconds] = useState<number | null>(null);
+  const [stopTimeMilliseconds, setStopTimeMilliseconds] = useState<
+    number | null
+  >(null);
 
-  const [climbSeconds, setClimbSeconds] = useState(
-    parseInt(localStorage.getItem("climbSeconds") || "", 10) || 270,
-  );
-  const [preparationSeconds, setPreparationSeconds] = useState(
-    parseInt(localStorage.getItem("preparationSeconds") || "", 10) || 15,
-  );
+  const [climbSeconds, setClimbSeconds] = useState(270);
+  const [preparationSeconds, setPreparationSeconds] = useState(10);
   const [isPlayEveryMinute, setPlayEveryMinute] = useState(
     localStorage.getItem("playEveryMinute") === "true",
   );
-  const [isPreparationEnabled, setPreparationEnabled] = useState(
-    localStorage.getItem("preparationEnabled") === "true",
-  );
+  const [isPreparationEnabled, setPreparationEnabled] = useState(false);
   const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(
     localStorage.getItem("isDarkModeEnabled") === "true",
   );
 
   function updateClimbSeconds(climbSeconds: number) {
-    setClimbSeconds(climbSeconds);
-    localStorage.setItem("climbSeconds", climbSeconds.toString());
+    const timerId = window.location.pathname.substring(1);
+    updateTimer({
+      id: timerId,
+      climbing_seconds: climbSeconds,
+    });
   }
 
   function updatePreparationSeconds(preparationSeconds: number) {
-    setPreparationSeconds(preparationSeconds);
-    localStorage.setItem("preparationSeconds", preparationSeconds.toString());
+    const timerId = window.location.pathname.substring(1);
+    updateTimer({
+      id: timerId,
+      preparation_seconds: preparationSeconds,
+    });
   }
 
   function updateIsPlayEveryMinute(playEveryMinute: boolean) {
@@ -69,8 +71,11 @@ const useSettingsState = (): Settings => {
   }
 
   function updateIsPreparationEnabled(preparationEnabled: boolean) {
-    setPreparationEnabled(preparationEnabled);
-    localStorage.setItem("preparationEnabled", preparationEnabled.toString());
+    const timerId = window.location.pathname.substring(1);
+    updateTimer({
+      id: timerId,
+      preparation_enabled: preparationEnabled,
+    });
   }
 
   function updateIsDarkModeEnabled(isDarkModeEnabled: boolean) {
@@ -120,9 +125,10 @@ const useSettingsState = (): Settings => {
     setStartTimestamp(timer.start_timestamp);
     setIsPreparationTime(timer.is_preparation_time);
     setStopTimeMilliseconds(timer.stop_time_milliseconds);
-    updateClimbSeconds(timer.climbing_seconds);
-    updatePreparationSeconds(timer.preparation_seconds);
-    updateIsPreparationEnabled(timer.preparation_enabled);
+    // Load settings from DB without triggering update
+    setClimbSeconds(timer.climbing_seconds);
+    setPreparationSeconds(timer.preparation_seconds);
+    setPreparationEnabled(timer.preparation_enabled);
   }
 
   useEffect(() => {
