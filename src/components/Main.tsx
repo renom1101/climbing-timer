@@ -14,8 +14,6 @@ function Main() {
   const {
     isDarkModeEnabled,
     climbSeconds,
-    preparationSeconds,
-    isPreparationEnabled,
     startTimestamp,
     isTimerOwner,
     stopTimeMilliseconds,
@@ -31,24 +29,28 @@ function Main() {
   }
 
   useEffect(() => {
-    // Only sync state from database for spectators (non-owners)
-    // Owners control the timer directly via buttons
-    if (isTimerOwner) return;
-
-    // Spectators: sync timer state from database
-    // isRunning = startTimestamp !== null && stopTimeMilliseconds === null
+    // Sync timer state from database for both owners and spectators
+    // This ensures on page refresh, the timer resumes from where it was
+    
+    // Determine what state we should be in based on DB values
     if (startTimestamp && stopTimeMilliseconds === null) {
-      // Timer is running - calculate time passed
-      const timePassed = reduceTime(Date.now() - startTimestamp);
-      startTimer(timePassed);
+      // Timer should be running
+      if (!isRunning) {
+        const timePassed = reduceTime(Date.now() - startTimestamp);
+        startTimer(timePassed);
+      }
     } else if (startTimestamp && stopTimeMilliseconds !== null) {
-      // Timer is paused - show frozen time
-      stopTimer();
-    } else if (!startTimestamp && stopTimeMilliseconds === null) {
-      // Timer has been reset
+      // Timer should be paused
+      if (isRunning) {
+        stopTimer();
+      }
+    } else {
+      // Timer has been reset (both null)
+      // Always reset when DB shows reset state
+      // resetTimer is idempotent so it's safe to call even if already reset
       resetTimer();
     }
-  }, [startTimestamp, stopTimeMilliseconds, isTimerOwner, climbSeconds, preparationSeconds, isPreparationEnabled]);
+  }, [startTimestamp, stopTimeMilliseconds]);
 
   useEffect(() => {
     if (isDarkModeEnabled) {
