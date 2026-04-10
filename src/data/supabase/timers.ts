@@ -1,4 +1,5 @@
 import { supabase } from "./client";
+import { TimerModel } from "./types";
 
 export async function getFirstTimer() {
   const { data: timers } = await supabase

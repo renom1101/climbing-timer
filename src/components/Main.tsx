@@ -14,6 +14,8 @@ function Main() {
   const {
     isDarkModeEnabled,
     climbSeconds,
+    preparationSeconds,
+    isPreparationEnabled,
     startTimestamp,
     isTimerOwner,
     stopTimeMilliseconds,
@@ -42,8 +44,11 @@ function Main() {
     } else if (startTimestamp && stopTimeMilliseconds !== null) {
       // Timer is paused - show frozen time
       stopTimer();
+    } else if (!startTimestamp && stopTimeMilliseconds === null) {
+      // Timer has been reset
+      resetTimer();
     }
-  }, [startTimestamp, stopTimeMilliseconds, isTimerOwner]);
+  }, [startTimestamp, stopTimeMilliseconds, isTimerOwner, climbSeconds, preparationSeconds, isPreparationEnabled]);
 
   useEffect(() => {
     if (isDarkModeEnabled) {

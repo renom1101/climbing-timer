@@ -7,6 +7,8 @@ import {
   updateTimer,
 } from "../data/supabase/timers";
 import useSession from "../hooks/useSession";
+import { useTimerSubscription } from "../hooks/useTimerSubscription";
+import { TimerModel } from "../data/supabase/types";
 
 export type Settings = {
   climbSeconds: number;
@@ -38,6 +40,7 @@ const useSettingsState = (): Settings => {
   const [stopTimeMilliseconds, setStopTimeMilliseconds] = useState<
     number | null
   >(null);
+  const [timerId, setTimerId] = useState<string | null>(null);
 
   const [climbSeconds, setClimbSeconds] = useState(
     parseInt(localStorage.getItem("climbSeconds") || "", 10) || 270,
@@ -140,11 +143,42 @@ const useSettingsState = (): Settings => {
     setStartTimestamp(timer.start_timestamp);
     setIsPreparationTime(timer.is_preparation_time);
     setStopTimeMilliseconds(timer.stop_time_milliseconds);
+    setTimerId(timer.id);
     // Load settings from DB without triggering update
     setClimbSeconds(timer.climbing_seconds);
     setPreparationSeconds(timer.preparation_seconds);
     setPreparationEnabled(timer.preparation_enabled);
   }
+
+  // Handle realtime subscription updates
+  function handleTimerUpdate(updatedTimer: Partial<TimerModel>) {
+    // Update timer state from realtime subscription
+    if (updatedTimer.start_timestamp !== undefined) {
+      setStartTimestamp(updatedTimer.start_timestamp);
+    }
+    if (updatedTimer.is_preparation_time !== undefined) {
+      setIsPreparationTime(updatedTimer.is_preparation_time);
+    }
+    if (updatedTimer.stop_time_milliseconds !== undefined) {
+      setStopTimeMilliseconds(updatedTimer.stop_time_milliseconds);
+    }
+    // Update settings if they changed
+    if (updatedTimer.climbing_seconds !== undefined) {
+      setClimbSeconds(updatedTimer.climbing_seconds);
+    }
+    if (updatedTimer.preparation_seconds !== undefined) {
+      setPreparationSeconds(updatedTimer.preparation_seconds);
+    }
+    if (updatedTimer.preparation_enabled !== undefined) {
+      setPreparationEnabled(updatedTimer.preparation_enabled);
+    }
+  }
+
+  // Subscribe to realtime updates
+  useTimerSubscription({
+    timerId,
+    onUpdate: handleTimerUpdate,
+  });
 
   useEffect(() => {
     getTimers();

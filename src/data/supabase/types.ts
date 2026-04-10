@@ -1,4 +1,4 @@
-type TimerModel = {
+export type TimerModel = {
   id: string;
   host_id: string;
   start_timestamp: number | null;
