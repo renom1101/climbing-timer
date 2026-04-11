@@ -1,5 +1,6 @@
 name: Deploy to Firebase Hosting on PR
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   CI: ""
   VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
   VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
@@ -14,7 +15,7 @@ jobs:
     if: "${{ github.event.pull_request.head.repo.full_name == github.repository }}"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -22,3 +23,4 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIMBING_TIMER_3F18C }}"
           projectId: climbing-timer-3f18c
           target: prod
+          firebaseToolsVersion: "15.14.0"
