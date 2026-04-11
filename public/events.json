@@ -1,0 +1,183 @@
+{
+  "events": [
+    {
+      "title": "Jaunimo rinktinės treniruočių stovykla",
+      "subtitle": "Pasiruošimas IFSC varžybų sezonui",
+      "date": "2025.07.19-20",
+      "location": "Kaunas",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/image-1-AzGXrWv8j5UP3Ogd.png",
+      "buttons": [
+        {
+          "text": "Aprašas",
+          "link": "https://drive.google.com/file/d/1MU-JSvLQpLifbe5H-ic3sdHVmeXG2UpU/view"
+        }
+      ]
+    },
+    {
+      "title": "Lietuvos sudėtingojo lipimo disciplinos čempionatas",
+      "subtitle": "12 trasų nuo 5a iki 8b",
+      "date": "2025.10.10-11",
+      "location": "Vilnius, Montis magia",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/lsc_fb-cover-AwvDQWvLjOFyN87W.jpg",
+      "buttons": []
+    },
+    {
+      "title": "Lietuvos jaunimo boulderingo taurė",
+      "subtitle": "2 etapas",
+      "date": "2025.10.18",
+      "location": "Vilnius, Vertical",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/ljbt2_fb-cover-Y4LxyQLEGrcK7704.jpg",
+      "buttons": []
+    },
+    {
+      "title": "Lietuvos vaikų boulderingo taurė",
+      "subtitle": "2 etapas",
+      "date": "2025.11.15",
+      "location": "Ukmergė, Kop Kop",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/lvbt2_fb-cover-mnlqNjlnvlCG4orv.png",
+      "buttons": []
+    },
+    {
+      "title": "Lietuvos jaunimo boulderingo taurė",
+      "subtitle": "3 etapas",
+      "date": "2025.11.29",
+      "location": "Klaipėda, Fabrique",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/ljbt3_fb-cover-A1aBybag3vfzonLQ.jpg",
+      "buttons": []
+    }
+  ],
+  "pastEvents": [
+    {
+      "title": "Laipiojimo specialistų kursai",
+      "subtitle": "3 lygis, 1 dalis ir 2 dalis",
+      "date": "2025.05.17 ir 2025.05.24",
+      "location": "Vilnius",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/image-2-d951pn3Kx1HybMOb.png",
+      "buttons": [
+        {
+          "text": "Registracija",
+          "link": "https://bendruomene.laipiojimofederacija.lt/"
+        },
+        {
+          "text": "Aprašas",
+          "link": "https://drive.google.com/file/d/1AF-mCWumBJEBfQtPomBuQ3u8KVz4Gpb0/view"
+        }
+      ]
+    },
+    {
+      "title": "Laipiojimo specialistų kursai",
+      "subtitle": "2 lygis",
+      "date": "2025.04.26",
+      "location": "Vilnius",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/image-2-d951pn3Kx1HybMOb.png",
+      "buttons": [
+        {
+          "text": "Registracija",
+          "link": "https://bendruomene.laipiojimofederacija.lt/"
+        },
+        {
+          "text": "Aprašas",
+          "link": "https://drive.google.com/file/d/1AF-mCWumBJEBfQtPomBuQ3u8KVz4Gpb0/view"
+        }
+      ]
+    },
+    {
+      "title": "Jaunimo rinktinės treniruočių stovykla",
+      "subtitle": "Pasiruošimas IFSC varžybų sezonui",
+      "date": "2025.04.19",
+      "location": "Vilnius",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/image-1-AzGXrWv8j5UP3Ogd.png",
+      "buttons": [
+        {
+          "text": "Aprašas",
+          "link": "https://drive.google.com/file/d/1HyyHe-PgALQxzfYF4xSOxNOPjwnoZlBy/view?usp=sharing"
+        }
+      ]
+    },
+    {
+      "title": "Laipiojimo specialistų kursai",
+      "subtitle": "1 lygis",
+      "date": "2025.04.12",
+      "location": "Vilnius",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/image-2-d951pn3Kx1HybMOb.png",
+      "buttons": [
+        {
+          "text": "Registracija",
+          "link": "https://bendruomene.laipiojimofederacija.lt/"
+        },
+        {
+          "text": "Aprašas",
+          "link": "https://drive.google.com/file/d/1AF-mCWumBJEBfQtPomBuQ3u8KVz4Gpb0/view"
+        }
+      ]
+    },
+    {
+      "title": "Lietuvos vaikų boulderingo taurė",
+      "subtitle": "1 etapas",
+      "date": "2025.04.05",
+      "location": "Klaipėda, Klaipėdos kalnų sporto klubas",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/lvbt1_fb-cover-YanqW8n7PGTDMX90.jpg",
+      "buttons": [
+        {
+          "text": "Nuostatai",
+          "link": "https://drive.google.com/file/d/1D7vPn3Y70_fHC7qjIovUW4UHDx12IKWD/view?usp=sharing"
+        },
+        {
+          "text": "Rezultatai",
+          "link": "https://climbalong.com/lt/competitions/282/info"
+        }
+      ]
+    },
+    {
+      "title": "Lietuvos jaunimo boulderingo čempionatas",
+      "subtitle": "Atranka į jaunimo rinktinę",
+      "date": "2025.03.01",
+      "location": "Kaunas, Boulder House",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/ljbc_fb-cover-YD0BOk0jVXTN80Vp.jpg",
+      "buttons": [
+        {
+          "text": "Nuostatai",
+          "link": "https://drive.google.com/file/d/1bNTlpFEYToboQNNSX1JVKA_TeBwU6WKb/view?usp=sharing"
+        },
+        {
+          "text": "Rezultatai",
+          "link": "https://climbalong.com/competitions/281/info"
+        }
+      ]
+    },
+    {
+      "title": "Lietuvos boulderingo čempionatas",
+      "subtitle": "Trasos nuo 5a iki 8b",
+      "date": "2025.02.07-08",
+      "location": "Vilnius, Bonobo",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/lbc_fb-cover-YNqP5kqXk7U0LBOV.jpg",
+      "buttons": [
+        {
+          "text": "Nuostatai",
+          "link": "https://drive.google.com/file/d/1St7ocOIDos52vqnH42h9aC22J0t3Yb8z/view?usp=sharing"
+        },
+        {
+          "text": "Rezultatai",
+          "link": "https://climbalong.com/lt/competitions/280/info"
+        }
+      ]
+    },
+    {
+      "title": "Lietuvos jaunimo boulderingo taurė",
+      "subtitle": "1 etapas",
+      "date": "2025.01.25",
+      "location": "Klaipėda, Scala dream",
+      "image": "https://assets.zyrosite.com/AVLB3j2NJ9iaw19Y/ljbt1_fb-cover-Y4LxyQLEpKUlk39e.jpg",
+      "buttons": [
+        {
+          "text": "Nuostatai",
+          "link": "https://drive.google.com/file/d/19B-XY3JytktKFRM6KtvISGjLvEwrokna/view?usp=sharing"
+        },
+        {
+          "text": "Rezultatai",
+          "link": "https://climbalong.com"
+        }
+      ]
+    }
+  ]
+}
