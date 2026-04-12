@@ -15,6 +15,7 @@ env:
     branches:
       - master
       - beta
+  workflow_dispatch:
 jobs:
   deploy_production:
     if: github.ref == 'refs/heads/master'
