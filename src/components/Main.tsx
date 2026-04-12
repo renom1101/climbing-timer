@@ -5,6 +5,7 @@ import Controls from "./Controls";
 import SettingsSlideOver from "./SettingsSlideOver";
 import useTimer from "../hooks/useTimer";
 import useSettings from "../hooks/useSettings";
+import { getAdjustedNow } from "../data/supabase/server-time";
 
 let settingsVisibilityTimer: ReturnType<typeof setTimeout> | undefined =
   undefined;
@@ -36,7 +37,7 @@ function Main() {
     if (startTimestamp && stopTimeMilliseconds === null) {
       // Timer should be running
       if (!isRunning) {
-        const timePassed = reduceTime(Date.now() - startTimestamp);
+        const timePassed = reduceTime(getAdjustedNow() - startTimestamp);
         startTimer(timePassed);
       }
     } else if (startTimestamp && stopTimeMilliseconds !== null) {

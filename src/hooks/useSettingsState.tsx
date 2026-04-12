@@ -9,6 +9,7 @@ import {
 import useSession from "../hooks/useSession";
 import { useTimerSubscription } from "../hooks/useTimerSubscription";
 import { TimerModel } from "../data/supabase/types";
+import { initClockOffset } from "../data/supabase/server-time";
 
 export type Settings = {
   climbSeconds: number;
@@ -182,6 +183,7 @@ const useSettingsState = (): Settings => {
 
   useEffect(() => {
     getTimers();
+    initClockOffset();
   }, [userId]);
 
   return {

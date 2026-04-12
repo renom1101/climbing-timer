@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import useSettings from "./useSettings";
 import useInterval from "./useInterval";
 import useSounds from "./useSounds";
+import { getAdjustedNow } from "../data/supabase/server-time";
 
 const useTimer = () => {
   const {
@@ -59,7 +60,7 @@ const useTimer = () => {
   ]);
 
   function updateTime() {
-    const currentTime = Date.now();
+    const currentTime = getAdjustedNow();
     const timePassed = currentTime - referenceTime;
     const newTimeLeft = timeLeft - timePassed;
 
@@ -93,7 +94,7 @@ const useTimer = () => {
   }
 
   function startTimer(timePassed?: number) {
-    const now = Date.now();
+    const now = getAdjustedNow();
     setReferenceTime(now);
     setIsRunning(true);
 
