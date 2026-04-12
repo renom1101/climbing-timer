@@ -1,6 +1,8 @@
 name: Deploy to Firebase Hosting on merge
 env:
   CI: ""
+  FIREBASE_PROJECT_ID: climbing-timer-3f18c
+  FIREBASE_TOOLS_VERSION: "15.14.0"
   VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
   VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
   VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
@@ -18,25 +20,39 @@ jobs:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: npm ci && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - uses: actions/checkout@v5
+      - name: Set GOOGLE_APPLICATION_CREDENTIALS
+        run: echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-sa.json" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIMBING_TIMER_3F18C }}"
-          channelId: live
-          projectId: climbing-timer-3f18c
-          target: prod
+          node-version: "22"
+          cache: npm
+      - run: npm ci && npm run build
+      - name: Write Firebase service account
+        run: printf '%s' "$SERVICE_ACCOUNT_JSON" > "$GOOGLE_APPLICATION_CREDENTIALS"
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIMBING_TIMER_3F18C }}
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@${{ env.FIREBASE_TOOLS_VERSION }}
+      - name: Deploy Hosting (production site)
+        run: firebase deploy --only hosting:prod --project "$FIREBASE_PROJECT_ID" --non-interactive --force
   deploy_beta:
     if: github.ref == 'refs/heads/beta'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: npm ci && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - uses: actions/checkout@v5
+      - name: Set GOOGLE_APPLICATION_CREDENTIALS
+        run: echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-sa.json" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIMBING_TIMER_3F18C }}"
-          channelId: live
-          projectId: climbing-timer-3f18c
-          target: beta
+          node-version: "22"
+          cache: npm
+      - run: npm ci && npm run build
+      - name: Write Firebase service account
+        run: printf '%s' "$SERVICE_ACCOUNT_JSON" > "$GOOGLE_APPLICATION_CREDENTIALS"
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIMBING_TIMER_3F18C }}
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@${{ env.FIREBASE_TOOLS_VERSION }}
+      - name: Deploy Hosting (beta site)
+        run: firebase deploy --only hosting:beta --project "$FIREBASE_PROJECT_ID" --non-interactive --force

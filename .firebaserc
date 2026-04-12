@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": "climbing-timer-3f18c"
+  },
+  "targets": {
+    "climbing-timer-3f18c": {
+      "hosting": {
+        "prod": ["climbing-timer-3f18c"],
+        "beta": ["climbing-timer-beta"]
+      }
+    }
+  }
+}
