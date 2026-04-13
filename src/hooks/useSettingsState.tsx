@@ -10,6 +10,7 @@ import useSession from "../hooks/useSession";
 import { useTimerSubscription } from "../hooks/useTimerSubscription";
 import { TimerModel } from "../data/supabase/types";
 import { initClockOffset } from "../data/supabase/server-time";
+import { supabase } from "../data/supabase/client";
 
 export type Settings = {
   climbSeconds: number;
@@ -116,17 +117,22 @@ const useSettingsState = (): Settings => {
     setStopTimeMilliseconds(stopTimeMilliseconds ?? null);
 
     const timerId = window.location.pathname.substring(1);
+    
+    // Set optimistically - will be corrected by realtime event
     const now = Date.now();
-
     setUpdatedAtMs(now);
 
-    await updateTimer({
-      id: timerId,
-      start_timestamp: startTimestamp ?? null,
-      is_preparation_time: isPreparationTime,
-      stop_time_milliseconds: stopTimeMilliseconds ?? null,
-      updated_at_ms: now,
+    // Call RPC function that sets updated_at_ms to server time
+    const { error } = await supabase.rpc("update_timer_with_server_time", {
+      timer_id: timerId,
+      new_start_timestamp: startTimestamp ?? null,
+      new_is_preparation_time: isPreparationTime,
+      new_stop_time_milliseconds: stopTimeMilliseconds ?? null,
     });
+
+    if (error) {
+      console.error("Error updating timer:", error);
+    }
   }
 
   async function getTimers() {
