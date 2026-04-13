@@ -9,7 +9,7 @@ import {
 import useSession from "../hooks/useSession";
 import { useTimerSubscription } from "../hooks/useTimerSubscription";
 import { TimerModel } from "../data/supabase/types";
-import { initClockOffset, getAdjustedNow } from "../data/supabase/server-time";
+import { initClockOffset } from "../data/supabase/server-time";
 
 export type Settings = {
   climbSeconds: number;
@@ -116,7 +116,7 @@ const useSettingsState = (): Settings => {
     setStopTimeMilliseconds(stopTimeMilliseconds ?? null);
 
     const timerId = window.location.pathname.substring(1);
-    const now = getAdjustedNow();
+    const now = Date.now();
 
     setUpdatedAtMs(now);
 

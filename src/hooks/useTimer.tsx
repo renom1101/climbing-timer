@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import useSettings from "./useSettings";
 import useInterval from "./useInterval";
 import useSounds from "./useSounds";
-import { getAdjustedNow } from "../data/supabase/server-time";
 
 const useTimer = () => {
   const {
@@ -125,7 +124,7 @@ const useTimer = () => {
     // For owner: only update DB if starting fresh or resuming from pause
     if (!startTimestamp) {
       // New start: set to current time and update DB
-      const now = getAdjustedNow();
+      const now = Date.now();
       updateTimerState(now, dbIsPreparationTime, null);
     } else if (startTimestamp && stopTimeMilliseconds !== null) {
       // Resuming from pause: convert display time to elapsed time
@@ -147,7 +146,7 @@ const useTimer = () => {
       }
       
       // Calculate new startTimestamp so that elapsed = now - startTimestamp
-      const now = getAdjustedNow();
+      const now = Date.now();
       const newStartTimestamp = now - elapsedAtPause;
       updateTimerState(newStartTimestamp, isPreparationTime, null);
     }
