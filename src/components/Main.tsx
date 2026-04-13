@@ -5,7 +5,6 @@ import Controls from "./Controls";
 import SettingsSlideOver from "./SettingsSlideOver";
 import useTimer from "../hooks/useTimer";
 import useSettings from "../hooks/useSettings";
-import { getAdjustedNow } from "../data/supabase/server-time";
 
 let settingsVisibilityTimer: ReturnType<typeof setTimeout> | undefined =
   undefined;
@@ -14,7 +13,6 @@ function Main() {
   const { isRunning, startTimer, stopTimer, resetTimer, timeLeft } = useTimer();
   const {
     isDarkModeEnabled,
-    climbSeconds,
     startTimestamp,
     isTimerOwner,
     stopTimeMilliseconds,
@@ -23,22 +21,14 @@ function Main() {
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  function reduceTime(time: number): number {
-    return time < climbSeconds * 1000
-      ? time
-      : reduceTime(time - climbSeconds * 1000);
-  }
-
   useEffect(() => {
     // Sync timer state from database for both owners and spectators
     // This ensures on page refresh, the timer resumes from where it was
     
-    // Determine what state we should be in based on DB values
     if (startTimestamp && stopTimeMilliseconds === null) {
       // Timer should be running
       if (!isRunning) {
-        const timePassed = reduceTime(getAdjustedNow() - startTimestamp);
-        startTimer(timePassed);
+        startTimer();
       }
     } else if (startTimestamp && stopTimeMilliseconds !== null) {
       // Timer should be paused
@@ -47,11 +37,9 @@ function Main() {
       }
     } else {
       // Timer has been reset (both null)
-      // Always reset when DB shows reset state
-      // resetTimer is idempotent so it's safe to call even if already reset
       resetTimer();
     }
-  }, [startTimestamp, stopTimeMilliseconds]);
+  }, [startTimestamp, stopTimeMilliseconds, isRunning]);
 
   useEffect(() => {
     if (isDarkModeEnabled) {

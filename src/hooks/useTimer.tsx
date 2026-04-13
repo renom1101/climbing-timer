@@ -20,7 +20,6 @@ const useTimer = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(climbSeconds * 1000);
   const [isPreparationTime, setIsPreparationTime] = useState(false);
-  const [referenceTime, setReferenceTime] = useState(0);
   const [isCycleFinished, setIsCycleFinished] = useState(false);
 
   useSounds(isRunning, timeLeft, isPreparationTime, isCycleFinished);
@@ -60,66 +59,102 @@ const useTimer = () => {
   ]);
 
   function updateTime() {
+    // Always calculate from startTimestamp (server truth)
+    if (!startTimestamp) return;
+
     const currentTime = getAdjustedNow();
-    const timePassed = currentTime - referenceTime;
-    const newTimeLeft = timeLeft - timePassed;
+    const elapsedMs = currentTime - startTimestamp;
 
-    setReferenceTime(currentTime);
+    // Determine cycle duration (prep + climb, or just climb if no prep)
+    const climbDurationMs = climbSeconds * 1000;
+    const prepDurationMs = preparationSeconds * 1000;
+    const cycleDurationMs = isPreparationEnabled
+      ? climbDurationMs + prepDurationMs
+      : climbDurationMs;
 
-    if (isCycleFinished) {
+    // Find position within the current cycle
+    const positionInCycleMs = elapsedMs % cycleDurationMs;
+
+    // Determine current phase
+    let newIsPreparationTime = false;
+    let displayTime = 0;
+
+    if (isPreparationEnabled) {
+      if (positionInCycleMs < prepDurationMs) {
+        // In preparation phase
+        newIsPreparationTime = true;
+        displayTime = prepDurationMs - positionInCycleMs;
+      } else {
+        // In climbing phase
+        newIsPreparationTime = false;
+        displayTime = climbDurationMs - (positionInCycleMs - prepDurationMs);
+      }
+    } else {
+      // No prep phase, just climbing
+      newIsPreparationTime = false;
+      displayTime = climbDurationMs - positionInCycleMs;
+    }
+
+    // Check if cycle just finished (displayTime wrapped around)
+    const wasCycleFinished = isCycleFinished;
+    const isCycleNowFinished = displayTime >= cycleDurationMs - 50; // Small margin for 50ms tick
+    
+    if (isCycleNowFinished && !wasCycleFinished) {
+      setIsCycleFinished(true);
+    } else if (!isCycleNowFinished && wasCycleFinished) {
       setIsCycleFinished(false);
     }
 
-    if (newTimeLeft > 0) {
-      setTimeLeft(newTimeLeft);
-      return;
-    }
-
-    setIsCycleFinished(true);
-    const nextCycleTime = getNextCycleTime();
-    setTimeLeft(nextCycleTime + newTimeLeft);
-    setIsPreparationTime(
-      (prevIsPreparationTime) => isPreparationEnabled && !prevIsPreparationTime,
-    );
+    setTimeLeft(displayTime);
+    setIsPreparationTime(newIsPreparationTime);
   }
 
   useInterval(updateTime, isRunning ? 50 : null);
 
-  function getNextCycleTime() {
-    if (!isPreparationEnabled) {
-      return climbSeconds * 1000;
-    }
-
-    return isPreparationTime ? climbSeconds * 1000 : preparationSeconds * 1000;
-  }
-
-  function startTimer(timePassed?: number) {
-    const now = getAdjustedNow();
-    setReferenceTime(now);
+  function startTimer() {
     setIsRunning(true);
 
     if (!isTimerOwner) {
-      setTimeLeft(
-        timePassed ? climbSeconds * 1000 - timePassed : climbSeconds * 1000,
-      );
-
       return;
     }
 
-    // If resuming from stopped state, adjust startTimestamp to account for pause
-    let newStartTimestamp = now;
-    if (startTimestamp && stopTimeMilliseconds !== null) {
-      // Resume: recalculate startTimestamp so display stays frozen
-      newStartTimestamp = now - (climbSeconds * 1000 - stopTimeMilliseconds);
+    // For owner: only update DB if starting fresh or resuming from pause
+    if (!startTimestamp) {
+      // New start: set to current time and update DB
+      const now = getAdjustedNow();
+      updateTimerState(now, dbIsPreparationTime, null);
+    } else if (startTimestamp && stopTimeMilliseconds !== null) {
+      // Resuming from pause: convert display time to elapsed time
+      // stopTimeMilliseconds is "time remaining in current phase"
+      // We need to convert it to "elapsed time since timer started"
+      const climbDurationMs = climbSeconds * 1000;
+      const prepDurationMs = preparationSeconds * 1000;
+      
+      let elapsedAtPause: number;
+      if (!isPreparationEnabled) {
+        // No prep phase: elapsed = climbDuration - displayTime
+        elapsedAtPause = climbDurationMs - stopTimeMilliseconds;
+      } else if (isPreparationTime) {
+        // In prep phase: elapsed = prepDuration - displayTime
+        elapsedAtPause = prepDurationMs - stopTimeMilliseconds;
+      } else {
+        // In climb phase: elapsed = prepDuration + (climbDuration - displayTime)
+        elapsedAtPause = prepDurationMs + (climbDurationMs - stopTimeMilliseconds);
+      }
+      
+      // Calculate new startTimestamp so that elapsed = now - startTimestamp
+      const now = getAdjustedNow();
+      const newStartTimestamp = now - elapsedAtPause;
+      updateTimerState(newStartTimestamp, isPreparationTime, null);
     }
-    updateTimerState(newStartTimestamp, dbIsPreparationTime, null);
+    // If already running (startTimestamp set, not paused), don't update DB
   }
 
   function stopTimer() {
     setIsRunning(false);
 
     if (isTimerOwner) {
-      // Save frozen display time when stopping
+      // Owner: save frozen display time to DB
       updateTimerState(startTimestamp, isPreparationTime, timeLeft);
     }
   }

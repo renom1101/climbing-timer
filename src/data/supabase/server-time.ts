@@ -5,10 +5,11 @@ let clockOffset = 0;
 /**
  * Initialize clock offset by getting server's current time
  * This compensates for clock skew between client and server
+ * Accounts for network latency (RTT) to ensure accuracy
  */
 export async function initClockOffset(): Promise<void> {
   try {
-    const clientTime = Date.now();
+    const clientTimeStart = Date.now();
 
     // Execute a query that returns the server's current time
     const { data, error } = await supabase.rpc("get_server_time_ms");
@@ -22,13 +23,21 @@ export async function initClockOffset(): Promise<void> {
       return;
     }
 
+    const clientTimeEnd = Date.now();
     const serverTime = data as number;
 
-    // Calculate offset: how much the server time differs from client time
-    clockOffset = serverTime - clientTime;
+    // Calculate round-trip time (RTT)
+    const rtt = clientTimeEnd - clientTimeStart;
+    
+    // The server time is from the middle of the RTT period
+    // Use midpoint of client time to estimate when server executed the RPC
+    const clientTimeMidpoint = clientTimeStart + rtt / 2;
+    
+    // Calculate offset accounting for network latency
+    clockOffset = serverTime - clientTimeMidpoint;
 
     console.debug(
-      `Clock offset initialized: ${clockOffset}ms (server: ${serverTime}, client: ${clientTime})`,
+      `Clock offset initialized: ${clockOffset}ms (server: ${serverTime}, client midpoint: ${clientTimeMidpoint}, RTT: ${rtt}ms)`,
     );
   } catch (error) {
     console.error("Error initializing clock offset:", error);
