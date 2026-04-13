@@ -13,6 +13,7 @@ const useTimer = () => {
     startTimestamp,
     isPreparationTime: dbIsPreparationTime,
     stopTimeMilliseconds,
+    updatedAtMs,
     updateTimerState,
     isTimerOwner,
   } = useSettings();
@@ -60,10 +61,13 @@ const useTimer = () => {
 
   function updateTime() {
     // Always calculate from startTimestamp (server truth)
-    if (!startTimestamp) return;
+    if (!startTimestamp || updatedAtMs === null) return;
 
-    const currentTime = getAdjustedNow();
-    const elapsedMs = currentTime - startTimestamp;
+    // Use updatedAtMs (server timestamp) as the reference point
+    // Add time elapsed since the update was received
+    const currentTime = Date.now();
+    const timeSinceUpdate = currentTime - updatedAtMs;
+    const elapsedMs = updatedAtMs - startTimestamp + timeSinceUpdate;
 
     // Determine cycle duration (prep + climb, or just climb if no prep)
     const climbDurationMs = climbSeconds * 1000;

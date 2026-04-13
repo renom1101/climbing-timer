@@ -9,7 +9,7 @@ import {
 import useSession from "../hooks/useSession";
 import { useTimerSubscription } from "../hooks/useTimerSubscription";
 import { TimerModel } from "../data/supabase/types";
-import { initClockOffset } from "../data/supabase/server-time";
+import { initClockOffset, getAdjustedNow } from "../data/supabase/server-time";
 
 export type Settings = {
   climbSeconds: number;
@@ -21,6 +21,7 @@ export type Settings = {
   startTimestamp: number | null;
   isPreparationTime: boolean;
   stopTimeMilliseconds: number | null;
+  updatedAtMs: number | null;
   updateClimbSeconds: (climbSeconds: number) => void;
   updatePreparationSeconds: (preparationSeconds: number) => void;
   updateIsPlayEveryMinute: (playEveryMinute: boolean) => void;
@@ -41,6 +42,7 @@ const useSettingsState = (): Settings => {
   const [stopTimeMilliseconds, setStopTimeMilliseconds] = useState<
     number | null
   >(null);
+  const [updatedAtMs, setUpdatedAtMs] = useState<number | null>(null);
   const [timerId, setTimerId] = useState<string | null>(null);
 
   const [climbSeconds, setClimbSeconds] = useState(
@@ -114,12 +116,16 @@ const useSettingsState = (): Settings => {
     setStopTimeMilliseconds(stopTimeMilliseconds ?? null);
 
     const timerId = window.location.pathname.substring(1);
+    const now = getAdjustedNow();
+
+    setUpdatedAtMs(now);
 
     await updateTimer({
       id: timerId,
       start_timestamp: startTimestamp ?? null,
       is_preparation_time: isPreparationTime,
       stop_time_milliseconds: stopTimeMilliseconds ?? null,
+      updated_at_ms: now,
     });
   }
 
@@ -144,6 +150,7 @@ const useSettingsState = (): Settings => {
     setStartTimestamp(timer.start_timestamp);
     setIsPreparationTime(timer.is_preparation_time);
     setStopTimeMilliseconds(timer.stop_time_milliseconds);
+    setUpdatedAtMs(timer.updated_at_ms);
     setTimerId(timer.id);
     // Load settings from DB without triggering update
     setClimbSeconds(timer.climbing_seconds);
@@ -162,6 +169,9 @@ const useSettingsState = (): Settings => {
     }
     if (updatedTimer.stop_time_milliseconds !== undefined) {
       setStopTimeMilliseconds(updatedTimer.stop_time_milliseconds);
+    }
+    if (updatedTimer.updated_at_ms !== undefined) {
+      setUpdatedAtMs(updatedTimer.updated_at_ms);
     }
     // Update settings if they changed
     if (updatedTimer.climbing_seconds !== undefined) {
@@ -196,6 +206,7 @@ const useSettingsState = (): Settings => {
     startTimestamp,
     isPreparationTime,
     stopTimeMilliseconds,
+    updatedAtMs,
     updateClimbSeconds,
     updatePreparationSeconds,
     updateIsPlayEveryMinute,

@@ -7,5 +7,6 @@ export type TimerModel = {
   climbing_seconds: number;
   preparation_seconds: number;
   preparation_enabled: boolean;
+  updated_at_ms: number | null;
   created_at: string;
 };
