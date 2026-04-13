@@ -9,7 +9,7 @@ import {
 import useSession from "../hooks/useSession";
 import { useTimerSubscription } from "../hooks/useTimerSubscription";
 import { TimerModel } from "../data/supabase/types";
-import { initClockOffset } from "../data/supabase/server-time";
+import { initClockOffset, refineClockOffset, getAdjustedNow } from "../data/supabase/server-time";
 import { supabase } from "../data/supabase/client";
 
 export type Settings = {
@@ -118,16 +118,16 @@ const useSettingsState = (): Settings => {
 
     const timerId = window.location.pathname.substring(1);
     
-    // Set optimistically - will be corrected by realtime event
-    const now = Date.now();
+    // Set optimistically using adjusted time - will be corrected by realtime event
+    const now = Math.round(getAdjustedNow());
     setUpdatedAtMs(now);
 
     // Call RPC function that sets updated_at_ms to server time
     const { error } = await supabase.rpc("update_timer_with_server_time", {
       timer_id: timerId,
-      new_start_timestamp: startTimestamp ?? null,
+      new_start_timestamp: startTimestamp !== null && startTimestamp !== undefined ? Math.round(startTimestamp) : null,
       new_is_preparation_time: isPreparationTime,
-      new_stop_time_milliseconds: stopTimeMilliseconds ?? null,
+      new_stop_time_milliseconds: stopTimeMilliseconds !== null && stopTimeMilliseconds !== undefined ? Math.round(stopTimeMilliseconds) : null,
     });
 
     if (error) {
@@ -166,6 +166,11 @@ const useSettingsState = (): Settings => {
 
   // Handle realtime subscription updates
   function handleTimerUpdate(updatedTimer: Partial<TimerModel>) {
+    // Refine clock offset based on server timestamp
+    if (updatedTimer.updated_at_ms !== undefined && updatedTimer.updated_at_ms !== null) {
+      refineClockOffset(updatedTimer.updated_at_ms);
+    }
+    
     // Update timer state from realtime subscription
     if (updatedTimer.start_timestamp !== undefined) {
       setStartTimestamp(updatedTimer.start_timestamp);

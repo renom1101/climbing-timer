@@ -46,6 +46,26 @@ export async function initClockOffset(): Promise<void> {
 }
 
 /**
+ * Refine clock offset based on server timestamp
+ * Called when receiving realtime updates with updated_at_ms (exact server time)
+ * This ensures per-device clock calibration is accurate
+ */
+export function refineClockOffset(serverTimestamp: number): void {
+  const currentDeviceTime = Date.now();
+  const measuredOffset = serverTimestamp - currentDeviceTime;
+  
+  // Smoothly update offset towards the measured value
+  // This prevents abrupt jumps while still correcting drift
+  clockOffset = Math.round((clockOffset + measuredOffset) / 2);
+  
+  if (Math.abs(measuredOffset - clockOffset) > 100) {
+    console.debug(
+      `Clock offset refined to ${clockOffset}ms (measured: ${measuredOffset}ms)`,
+    );
+  }
+}
+
+/**
  * Get the current time adjusted for server clock
  * This ensures all clients calculate elapsed time consistently
  */

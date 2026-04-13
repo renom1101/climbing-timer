@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import useSettings from "./useSettings";
 import useInterval from "./useInterval";
 import useSounds from "./useSounds";
+import { getAdjustedNow } from "../data/supabase/server-time";
 
 const useTimer = () => {
   const {
@@ -63,9 +64,9 @@ const useTimer = () => {
     if (!startTimestamp || updatedAtMs === null) return;
 
     // Use updatedAtMs (server timestamp) as the reference point
-    // Add time elapsed since the update was received
-    const currentTime = Date.now();
-    const timeSinceUpdate = currentTime - updatedAtMs;
+    // Add time elapsed since the update was received, using adjusted time
+    const currentAdjustedTime = getAdjustedNow();
+    const timeSinceUpdate = currentAdjustedTime - updatedAtMs;
     const elapsedMs = updatedAtMs - startTimestamp + timeSinceUpdate;
 
     // Determine cycle duration (prep + climb, or just climb if no prep)
@@ -124,7 +125,7 @@ const useTimer = () => {
     // For owner: only update DB if starting fresh or resuming from pause
     if (!startTimestamp) {
       // New start: set to current time and update DB
-      const now = Date.now();
+      const now = Math.round(getAdjustedNow());
       updateTimerState(now, dbIsPreparationTime, null);
     } else if (startTimestamp && stopTimeMilliseconds !== null) {
       // Resuming from pause: convert display time to elapsed time
@@ -146,7 +147,7 @@ const useTimer = () => {
       }
       
       // Calculate new startTimestamp so that elapsed = now - startTimestamp
-      const now = Date.now();
+      const now = Math.round(getAdjustedNow());
       const newStartTimestamp = now - elapsedAtPause;
       updateTimerState(newStartTimestamp, isPreparationTime, null);
     }
