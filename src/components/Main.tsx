@@ -22,24 +22,14 @@ function Main() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
-    // Sync timer state from database for both owners and spectators
-    // This ensures on page refresh, the timer resumes from where it was
-    
     if (startTimestamp && stopTimeMilliseconds === null) {
-      // Timer should be running
-      if (!isRunning) {
-        startTimer();
-      }
+      startTimer();
     } else if (startTimestamp && stopTimeMilliseconds !== null) {
-      // Timer should be paused
-      if (isRunning) {
-        stopTimer();
-      }
+      stopTimer();
     } else {
-      // Timer has been reset (both null)
       resetTimer();
     }
-  }, [startTimestamp, stopTimeMilliseconds, isRunning]);
+  }, [startTimestamp, stopTimeMilliseconds]);
 
   useEffect(() => {
     if (isDarkModeEnabled) {

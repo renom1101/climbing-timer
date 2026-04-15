@@ -31,33 +31,14 @@ const useTimer = () => {
     resetTimer();
   }, [climbSeconds]);
 
-  // Sync isPreparationTime from database when it changes
-  useEffect(() => {
-    setIsPreparationTime(dbIsPreparationTime);
-  }, [dbIsPreparationTime]);
-
-  // When paused state is loaded from DB, restore frozen display time
+  // Restore frozen state from DB only when paused (not while running —
+  // updateTime is the authority for phase and display while the timer ticks)
   useEffect(() => {
     if (stopTimeMilliseconds !== null) {
       setTimeLeft(stopTimeMilliseconds);
+      setIsPreparationTime(dbIsPreparationTime);
     }
-  }, [stopTimeMilliseconds]);
-
-  // When phase changes and timer is running, update database
-  useEffect(() => {
-    if (!isRunning || !isTimerOwner) return;
-
-    if (isPreparationTime !== dbIsPreparationTime) {
-      updateTimerState(startTimestamp, isPreparationTime, null);
-    }
-  }, [
-    isPreparationTime,
-    dbIsPreparationTime,
-    isRunning,
-    isTimerOwner,
-    startTimestamp,
-    updateTimerState,
-  ]);
+  }, [stopTimeMilliseconds, dbIsPreparationTime]);
 
   function updateTime() {
     // Always calculate from startTimestamp (server truth)
@@ -84,17 +65,14 @@ const useTimer = () => {
     let displayTime = 0;
 
     if (isPreparationEnabled) {
-      if (positionInCycleMs < prepDurationMs) {
-        // In preparation phase
-        newIsPreparationTime = true;
-        displayTime = prepDurationMs - positionInCycleMs;
-      } else {
-        // In climbing phase
+      if (positionInCycleMs < climbDurationMs) {
         newIsPreparationTime = false;
-        displayTime = climbDurationMs - (positionInCycleMs - prepDurationMs);
+        displayTime = climbDurationMs - positionInCycleMs;
+      } else {
+        newIsPreparationTime = true;
+        displayTime = prepDurationMs - (positionInCycleMs - climbDurationMs);
       }
     } else {
-      // No prep phase, just climbing
       newIsPreparationTime = false;
       displayTime = climbDurationMs - positionInCycleMs;
     }
@@ -136,14 +114,11 @@ const useTimer = () => {
       
       let elapsedAtPause: number;
       if (!isPreparationEnabled) {
-        // No prep phase: elapsed = climbDuration - displayTime
         elapsedAtPause = climbDurationMs - stopTimeMilliseconds;
       } else if (isPreparationTime) {
-        // In prep phase: elapsed = prepDuration - displayTime
-        elapsedAtPause = prepDurationMs - stopTimeMilliseconds;
+        elapsedAtPause = climbDurationMs + (prepDurationMs - stopTimeMilliseconds);
       } else {
-        // In climb phase: elapsed = prepDuration + (climbDuration - displayTime)
-        elapsedAtPause = prepDurationMs + (climbDurationMs - stopTimeMilliseconds);
+        elapsedAtPause = climbDurationMs - stopTimeMilliseconds;
       }
       
       // Calculate new startTimestamp so that elapsed = now - startTimestamp
