@@ -77,13 +77,13 @@ const useTimer = () => {
       displayTime = climbDurationMs - positionInCycleMs;
     }
 
-    // Check if cycle just finished (displayTime wrapped around)
-    const wasCycleFinished = isCycleFinished;
-    const isCycleNowFinished = displayTime >= cycleDurationMs - 50; // Small margin for 50ms tick
-    
-    if (isCycleNowFinished && !wasCycleFinished) {
+    const phaseChanged = isPreparationEnabled
+      ? newIsPreparationTime !== isPreparationTime
+      : displayTime >= cycleDurationMs - 50;
+
+    if (phaseChanged && !isCycleFinished) {
       setIsCycleFinished(true);
-    } else if (!isCycleNowFinished && wasCycleFinished) {
+    } else if (!phaseChanged && isCycleFinished) {
       setIsCycleFinished(false);
     }
 
