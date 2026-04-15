@@ -31,17 +31,9 @@ export default function useSounds(
   }, [totalSeconds]);
 
   useEffect(() => {
-    if (!isEnabled) return;
-
+    if (!isEnabled || !isPlayEveryMinute) return;
     if (isPreparationTime || totalSeconds === climbSeconds) return;
-
-    if (totalSeconds === 60) {
-      playDing();
-    }
-
-    if (!isPlayEveryMinute) return;
-
-    if (totalSeconds % 60 === 0) {
+    if (totalSeconds > 0 && totalSeconds % 60 === 0) {
       playDing();
     }
   }, [totalSeconds, isPlayEveryMinute]);
