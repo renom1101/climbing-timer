@@ -23,7 +23,7 @@ const useTimer = () => {
   const [isPreparationTime, setIsPreparationTime] = useState(false);
   const [isCycleFinished, setIsCycleFinished] = useState(false);
 
-  useSounds(isRunning, timeLeft, isPreparationTime, isCycleFinished);
+  useSounds(isRunning, timeLeft, isCycleFinished);
 
   const prevClimbSeconds = useRef(climbSeconds);
   useEffect(() => {
@@ -113,16 +113,17 @@ const useTimer = () => {
       // We need to convert it to "elapsed time since timer started"
       const climbDurationMs = climbSeconds * 1000;
       const prepDurationMs = preparationSeconds * 1000;
-      
+
       let elapsedAtPause: number;
       if (!isPreparationEnabled) {
         elapsedAtPause = climbDurationMs - stopTimeMilliseconds;
       } else if (isPreparationTime) {
-        elapsedAtPause = climbDurationMs + (prepDurationMs - stopTimeMilliseconds);
+        elapsedAtPause =
+          climbDurationMs + (prepDurationMs - stopTimeMilliseconds);
       } else {
         elapsedAtPause = climbDurationMs - stopTimeMilliseconds;
       }
-      
+
       // Calculate new startTimestamp so that elapsed = now - startTimestamp
       const now = Math.round(getAdjustedNow());
       const newStartTimestamp = now - elapsedAtPause;

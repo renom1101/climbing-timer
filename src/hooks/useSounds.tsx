@@ -6,8 +6,7 @@ import useSettings from "./useSettings";
 export default function useSounds(
   isEnabled: boolean,
   timeLeft: number,
-  isPreparationTime: boolean,
-  isCycleFinished: boolean
+  isCycleFinished: boolean,
 ) {
   const { climbSeconds, isPlayEveryMinute } = useSettings();
 
@@ -28,7 +27,7 @@ export default function useSounds(
     if (!isEnabled) return;
     if (totalSeconds >= prev) return;
 
-    const lastSeconds = isPreparationTime ? 3 : 5;
+    const lastSeconds = 5;
     if (totalSeconds > lastSeconds) return;
 
     playDing();
@@ -36,7 +35,7 @@ export default function useSounds(
 
   useEffect(() => {
     if (!isEnabled || !isPlayEveryMinute) return;
-    if (isPreparationTime || totalSeconds === climbSeconds) return;
+    if (totalSeconds === climbSeconds) return;
     if (totalSeconds > 0 && totalSeconds % 60 === 0) {
       playDing();
     }
