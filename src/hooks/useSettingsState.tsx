@@ -9,7 +9,7 @@ import {
 import useSession from "../hooks/useSession";
 import { useTimerSubscription } from "../hooks/useTimerSubscription";
 import { TimerModel } from "../data/supabase/types";
-import { initClockOffset, refineClockOffset, getAdjustedNow } from "../data/supabase/server-time";
+import { initClockOffset, getAdjustedNow } from "../data/supabase/server-time";
 import { supabase } from "../data/supabase/client";
 
 export type Settings = {
@@ -164,14 +164,7 @@ const useSettingsState = (): Settings => {
     setPreparationEnabled(timer.preparation_enabled);
   }
 
-  // Handle realtime subscription updates
   function handleTimerUpdate(updatedTimer: Partial<TimerModel>) {
-    // Refine clock offset based on server timestamp
-    if (updatedTimer.updated_at_ms !== undefined && updatedTimer.updated_at_ms !== null) {
-      refineClockOffset(updatedTimer.updated_at_ms);
-    }
-    
-    // Update timer state from realtime subscription
     if (updatedTimer.start_timestamp !== undefined) {
       setStartTimestamp(updatedTimer.start_timestamp);
     }
@@ -203,9 +196,17 @@ const useSettingsState = (): Settings => {
   });
 
   useEffect(() => {
-    getTimers();
-    initClockOffset();
+    async function init() {
+      await initClockOffset();
+      await getTimers();
+    }
+    init();
   }, [userId]);
+
+  useEffect(() => {
+    const id = setInterval(initClockOffset, 60_000);
+    return () => clearInterval(id);
+  }, []);
 
   return {
     climbSeconds,

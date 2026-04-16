@@ -1,11 +1,9 @@
 import { supabase } from "./client";
 
 let clockOffset = 0;
-let bestRtt = Infinity;
 
 const SAMPLE_COUNT = 8;
 const BEST_SAMPLE_COUNT = 4;
-const EMA_ALPHA = 0.1;
 
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
@@ -51,37 +49,13 @@ export async function initClockOffset(): Promise<void> {
     const best = samples.slice(0, Math.min(BEST_SAMPLE_COUNT, samples.length));
 
     clockOffset = median(best.map((s) => s.offset));
-    bestRtt = best[0].rtt;
 
     console.debug(
-      `Clock offset initialized: ${clockOffset}ms (${best.length}/${samples.length} best samples, best RTT: ${bestRtt}ms)`,
+      `Clock offset initialized: ${clockOffset}ms (${best.length}/${samples.length} best samples, best RTT: ${best[0].rtt}ms)`,
     );
   } catch (error) {
     console.error("Error initializing clock offset:", error);
     clockOffset = 0;
-  }
-}
-
-/**
- * Refine clock offset from a realtime update's server timestamp.
- * Accounts for one-way delivery latency (estimated as bestRtt / 2) since
- * serverTimestamp is when the server wrote the row, not when the client
- * received it. Uses an exponential moving average for smooth convergence.
- */
-export function refineClockOffset(serverTimestamp: number): void {
-  const estimatedOneWayLatency = bestRtt < Infinity ? bestRtt / 2 : 0;
-  const measuredOffset =
-    serverTimestamp - Date.now() + estimatedOneWayLatency;
-
-  const previous = clockOffset;
-  clockOffset = Math.round(
-    clockOffset * (1 - EMA_ALPHA) + measuredOffset * EMA_ALPHA,
-  );
-
-  if (Math.abs(previous - clockOffset) > 50) {
-    console.debug(
-      `Clock offset refined: ${previous}ms -> ${clockOffset}ms (measured: ${measuredOffset}ms)`,
-    );
   }
 }
 
