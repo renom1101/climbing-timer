@@ -13,12 +13,10 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
   const {
     climbSeconds,
     preparationSeconds,
-    isPlayEveryMinute,
     isPreparationEnabled,
     isDarkModeEnabled,
     updateClimbSeconds,
     updatePreparationSeconds,
-    updateIsPlayEveryMinute,
     updateIsPreparationEnabled,
     updateIsDarkModeEnabled,
   } = useSettings();
@@ -39,10 +37,6 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
     }
   }
 
-  function handleIsPlayEveryMinuteChange() {
-    updateIsPlayEveryMinute(!isPlayEveryMinute);
-  }
-
   function handleIsPreparationEnabledChange() {
     updateIsPreparationEnabled(!isPreparationEnabled);
   }
@@ -54,13 +48,6 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
   return (
     <SlideOver title="Settings" isOpen={isOpen} onClose={onClose}>
       <div className="space-y-2 text-sm">
-        <div className="flex justify-between items-center">
-          <label>Sound every minute</label>
-          <Toggle
-            enabled={isPlayEveryMinute}
-            onClick={handleIsPlayEveryMinuteChange}
-          />
-        </div>
         <div className="flex justify-between items-center">
           <label>Preparation time</label>
           <Toggle

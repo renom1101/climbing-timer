@@ -16,7 +16,6 @@ export type Settings = {
   isLoading: boolean;
   climbSeconds: number;
   preparationSeconds: number;
-  isPlayEveryMinute: boolean;
   isPreparationEnabled: boolean;
   isDarkModeEnabled: boolean;
   isTimerOwner: boolean;
@@ -26,7 +25,6 @@ export type Settings = {
   updatedAtMs: number | null;
   updateClimbSeconds: (climbSeconds: number) => void;
   updatePreparationSeconds: (preparationSeconds: number) => void;
-  updateIsPlayEveryMinute: (playEveryMinute: boolean) => void;
   updateIsPreparationEnabled: (preparationEnabled: boolean) => void;
   updateIsDarkModeEnabled: (isDarkModeEnabled: boolean) => void;
   updateTimerState: (
@@ -53,9 +51,6 @@ const useSettingsState = (): Settings => {
   );
   const [preparationSeconds, setPreparationSeconds] = useState(
     parseInt(localStorage.getItem("preparationSeconds") || "", 10) || 15,
-  );
-  const [isPlayEveryMinute, setPlayEveryMinute] = useState(
-    localStorage.getItem("playEveryMinute") === "true",
   );
   const [isPreparationEnabled, setPreparationEnabled] = useState(
     localStorage.getItem("preparationEnabled") === "true",
@@ -84,11 +79,6 @@ const useSettingsState = (): Settings => {
       id: timerId,
       preparation_seconds: preparationSeconds,
     });
-  }
-
-  function updateIsPlayEveryMinute(playEveryMinute: boolean) {
-    setPlayEveryMinute(playEveryMinute);
-    localStorage.setItem("playEveryMinute", playEveryMinute.toString());
   }
 
   function updateIsPreparationEnabled(preparationEnabled: boolean) {
@@ -216,7 +206,6 @@ const useSettingsState = (): Settings => {
     isLoading,
     climbSeconds,
     preparationSeconds,
-    isPlayEveryMinute,
     isPreparationEnabled,
     isDarkModeEnabled,
     isTimerOwner,
@@ -226,7 +215,6 @@ const useSettingsState = (): Settings => {
     updatedAtMs,
     updateClimbSeconds,
     updatePreparationSeconds,
-    updateIsPlayEveryMinute,
     updateIsPreparationEnabled,
     updateIsDarkModeEnabled,
     updateTimerState,
