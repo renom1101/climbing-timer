@@ -79,7 +79,7 @@ const useTimer = () => {
 
     const phaseChanged = isPreparationEnabled
       ? newIsPreparationTime !== isPreparationTime
-      : displayTime >= cycleDurationMs - 50;
+      : displayTime >= cycleDurationMs - 16;
 
     if (phaseChanged && !isCycleFinished) {
       setIsCycleFinished(true);
@@ -91,7 +91,7 @@ const useTimer = () => {
     setIsPreparationTime(newIsPreparationTime);
   }
 
-  useInterval(updateTime, isRunning ? 50 : null);
+  useInterval(updateTime, isRunning ? 16 : null);
 
   function startTimer() {
     setIsRunning(true);
