@@ -32,6 +32,18 @@ function Main() {
   }, [startTimestamp, stopTimeMilliseconds]);
 
   useEffect(() => {
+    if (!isRunning || !navigator.wakeLock) return;
+    let wakeLock: WakeLockSentinel | null = null;
+    async function acquire() {
+      try {
+        wakeLock = await navigator.wakeLock.request("screen");
+      } catch { /* user navigated away or device doesn't support it */ }
+    }
+    acquire();
+    return () => { wakeLock?.release(); };
+  }, [isRunning]);
+
+  useEffect(() => {
     if (isDarkModeEnabled) {
       document.body.classList.add("dark");
       return;
