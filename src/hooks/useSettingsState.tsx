@@ -13,6 +13,7 @@ import { initClockOffset, getAdjustedNow } from "../data/supabase/server-time";
 import { supabase } from "../data/supabase/client";
 
 export type Settings = {
+  isLoading: boolean;
   climbSeconds: number;
   preparationSeconds: number;
   isPlayEveryMinute: boolean;
@@ -37,6 +38,7 @@ export type Settings = {
 
 const useSettingsState = (): Settings => {
   const { userId } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
   const [isTimerOwner, setIsTimerOwner] = useState(false);
   const [startTimestamp, setStartTimestamp] = useState<number | null>(null);
   const [isPreparationTime, setIsPreparationTime] = useState(false);
@@ -200,6 +202,7 @@ const useSettingsState = (): Settings => {
     async function init() {
       await initClockOffset();
       await getTimers();
+      setIsLoading(false);
     }
     init();
   }, [userId]);
@@ -210,6 +213,7 @@ const useSettingsState = (): Settings => {
   }, []);
 
   return {
+    isLoading,
     climbSeconds,
     preparationSeconds,
     isPlayEveryMinute,

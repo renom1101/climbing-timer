@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import useSettings from "./useSettings";
 import useInterval from "./useInterval";
@@ -25,9 +25,11 @@ const useTimer = () => {
 
   useSounds(isRunning, timeLeft, isPreparationTime, isCycleFinished);
 
+  const prevClimbSeconds = useRef(climbSeconds);
   useEffect(() => {
+    if (prevClimbSeconds.current === climbSeconds) return;
+    prevClimbSeconds.current = climbSeconds;
     if (isRunning) return;
-
     resetTimer();
   }, [climbSeconds]);
 
