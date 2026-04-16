@@ -27,7 +27,9 @@ export function playDing() {
   osc.connect(gain);
   gain.connect(ctx.destination);
 
-  gain.gain.setValueAtTime(0.7, now);
+  gain.gain.setValueAtTime(0.001, now);
+  gain.gain.exponentialRampToValueAtTime(0.7, now + 0.01);
+  gain.gain.setValueAtTime(0.7, now + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
 
   osc.start(now);
@@ -50,7 +52,9 @@ export function playDong() {
   osc.connect(gain);
   gain.connect(ctx.destination);
 
-  gain.gain.setValueAtTime(0.7, now);
+  gain.gain.setValueAtTime(0.001, now);
+  gain.gain.exponentialRampToValueAtTime(0.7, now + 0.01);
+  gain.gain.setValueAtTime(0.7, now + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
 
   osc.start(now);
