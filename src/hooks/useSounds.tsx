@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { playDing, playDong } from "../utils/audio";
 import useSettings from "./useSettings";
@@ -12,6 +12,7 @@ export default function useSounds(
   const { climbSeconds, isPlayEveryMinute } = useSettings();
 
   const totalSeconds = Math.ceil(timeLeft / 1000);
+  const prevSeconds = useRef(totalSeconds);
 
   useEffect(() => {
     if (!isEnabled) return;
@@ -21,10 +22,13 @@ export default function useSounds(
   }, [isCycleFinished]);
 
   useEffect(() => {
+    const prev = prevSeconds.current;
+    prevSeconds.current = totalSeconds;
+
     if (!isEnabled) return;
+    if (totalSeconds >= prev) return;
 
     const lastSeconds = isPreparationTime ? 3 : 5;
-
     if (totalSeconds > lastSeconds) return;
 
     playDing();

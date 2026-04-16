@@ -196,6 +196,7 @@ const useSettingsState = (): Settings => {
   });
 
   useEffect(() => {
+    if (!userId) return;
     async function init() {
       await initClockOffset();
       await getTimers();
