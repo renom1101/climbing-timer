@@ -11,25 +11,10 @@ let settingsVisibilityTimer: ReturnType<typeof setTimeout> | undefined =
 
 function Main() {
   const { isRunning, startTimer, stopTimer, resetTimer, timeLeft } = useTimer();
-  const {
-    isDarkModeEnabled,
-    startTimestamp,
-    isTimerOwner,
-    stopTimeMilliseconds,
-  } = useSettings();
+  const { isDarkModeEnabled, isTimerOwner } = useSettings();
 
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
-  useEffect(() => {
-    if (startTimestamp && stopTimeMilliseconds === null) {
-      startTimer();
-    } else if (startTimestamp && stopTimeMilliseconds !== null) {
-      stopTimer();
-    } else {
-      resetTimer();
-    }
-  }, [startTimestamp, stopTimeMilliseconds]);
 
   useEffect(() => {
     if (!isRunning || !navigator.wakeLock) return;

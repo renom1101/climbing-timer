@@ -33,14 +33,22 @@ const useTimer = () => {
     resetTimer();
   }, [climbSeconds]);
 
-  // Restore frozen state from DB only when paused (not while running —
-  // updateTime is the authority for phase and display while the timer ticks)
+  // Mirror DB state into local state without writing back to DB.
+  // DB writes happen only from user-action handlers (startTimer/stopTimer/resetTimer)
+  // to avoid realtime-echo loops.
   useEffect(() => {
-    if (stopTimeMilliseconds !== null) {
+    if (startTimestamp && stopTimeMilliseconds === null) {
+      setIsRunning(true);
+    } else if (startTimestamp && stopTimeMilliseconds !== null) {
+      setIsRunning(false);
       setTimeLeft(stopTimeMilliseconds);
       setIsPreparationTime(dbIsPreparationTime);
+    } else {
+      setIsRunning(false);
+      setTimeLeft(climbSeconds * 1000);
+      setIsPreparationTime(false);
     }
-  }, [stopTimeMilliseconds, dbIsPreparationTime]);
+  }, [startTimestamp, stopTimeMilliseconds, dbIsPreparationTime, climbSeconds]);
 
   function updateTime() {
     // Always calculate from startTimestamp (server truth)
