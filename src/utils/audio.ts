@@ -64,18 +64,18 @@ export function playDong() {
   osc.connect(filter);
   osc2.connect(filter);
   filter.type = "lowpass";
-  filter.frequency.setValueAtTime(1400, now);
-  filter.Q.setValueAtTime(0.9, now);
+  filter.frequency.setValueAtTime(2000, now);
+  filter.Q.setValueAtTime(1.2, now);
   filter.connect(gain);
   gain.connect(ctx.destination);
 
   gain.gain.setValueAtTime(0.001, now);
-  gain.gain.exponentialRampToValueAtTime(0.98, now + 0.02);
-  gain.gain.setValueAtTime(0.98, now + 0.25);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+  gain.gain.exponentialRampToValueAtTime(1.0, now + 0.015);
+  gain.gain.setValueAtTime(1.0, now + 0.45);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 1.3);
 
   osc.start(now);
   osc2.start(now);
-  osc.stop(now + 0.9);
-  osc2.stop(now + 0.9);
+  osc.stop(now + 1.1);
+  osc2.stop(now + 0.95);
 }
