@@ -11,52 +11,71 @@ function getContext(): AudioContext {
 }
 
 /**
- * Single strong beep at 1000 Hz. Triangle wave is less harsh than
- * square but still carries harmonics that cut through noise.
- * 250ms duration with decay gives a clear, punchy tick.
+ * Bright, snappy ding that matches the bolder horn palette.
  */
 export function playDing() {
   const ctx = getContext();
   const now = ctx.currentTime;
 
   const osc = ctx.createOscillator();
+  const osc2 = ctx.createOscillator();
+  const filter = ctx.createBiquadFilter();
   const gain = ctx.createGain();
 
-  osc.type = "triangle";
-  osc.frequency.value = 1000;
-  osc.connect(gain);
+  osc.type = "square";
+  osc2.type = "sawtooth";
+  osc.frequency.setValueAtTime(900, now);
+  osc2.frequency.setValueAtTime(1350, now);
+  osc.connect(filter);
+  osc2.connect(filter);
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(1700, now);
+  filter.Q.setValueAtTime(0.6, now);
+  filter.connect(gain);
   gain.connect(ctx.destination);
 
   gain.gain.setValueAtTime(0.001, now);
-  gain.gain.exponentialRampToValueAtTime(0.7, now + 0.01);
-  gain.gain.setValueAtTime(0.7, now + 0.01);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+  gain.gain.exponentialRampToValueAtTime(0.78, now + 0.015);
+  gain.gain.setValueAtTime(0.78, now + 0.09);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
 
   osc.start(now);
-  osc.stop(now + 0.25);
+  osc2.start(now);
+  osc.stop(now + 0.22);
+  osc2.stop(now + 0.22);
 }
 
 /**
- * Low sine tone at 440 Hz with a long decay. Deep and resonant,
- * clearly distinct from the higher-pitched ding.
+ * Ship-horn style dong: deep, steady, and resonant.
  */
 export function playDong() {
   const ctx = getContext();
   const now = ctx.currentTime;
 
   const osc = ctx.createOscillator();
+  const osc2 = ctx.createOscillator();
+  const filter = ctx.createBiquadFilter();
   const gain = ctx.createGain();
 
-  osc.type = "sine";
-  osc.frequency.value = 440;
-  osc.connect(gain);
+  osc.type = "square";
+  osc2.type = "sawtooth";
+  osc.frequency.setValueAtTime(220, now);
+  osc2.frequency.setValueAtTime(440, now);
+  osc.connect(filter);
+  osc2.connect(filter);
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(1400, now);
+  filter.Q.setValueAtTime(0.9, now);
+  filter.connect(gain);
   gain.connect(ctx.destination);
 
   gain.gain.setValueAtTime(0.001, now);
-  gain.gain.exponentialRampToValueAtTime(0.7, now + 0.01);
-  gain.gain.setValueAtTime(0.7, now + 0.01);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+  gain.gain.exponentialRampToValueAtTime(0.98, now + 0.02);
+  gain.gain.setValueAtTime(0.98, now + 0.25);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
 
   osc.start(now);
-  osc.stop(now + 0.6);
+  osc2.start(now);
+  osc.stop(now + 0.9);
+  osc2.stop(now + 0.9);
 }
