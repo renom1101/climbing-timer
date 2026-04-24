@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+import classNames from "classnames";
 
 import SlideOver from "./ui/SlideOver";
 import Toggle from "./ui/Toggle";
@@ -15,11 +16,15 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
     preparationSeconds,
     isPreparationEnabled,
     isDarkModeEnabled,
+    startTimestamp,
+    stopTimeMilliseconds,
     updateClimbSeconds,
     updatePreparationSeconds,
     updateIsPreparationEnabled,
     updateIsDarkModeEnabled,
   } = useSettings();
+
+  const isRunning = startTimestamp !== null && stopTimeMilliseconds === null;
 
   function handleClimbSecondsChange(e: ChangeEvent<HTMLInputElement>) {
     const newSeconds = parseInt(e.target.value, 10);
@@ -53,6 +58,7 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
           <Toggle
             enabled={isPreparationEnabled}
             onClick={handleIsPreparationEnabledChange}
+            disabled={isRunning}
           />
         </div>
         <div className="flex justify-between items-center">
@@ -61,19 +67,27 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
             type="text"
             name="climbing-seconds"
             id="climbing-seconds"
-            className="rounded-md border-0 pl-2 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+            className={classNames(
+              "rounded-md border-0 pl-2 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary",
+              isRunning && "opacity-50 cursor-not-allowed",
+            )}
             defaultValue={climbSeconds}
             onChange={handleClimbSecondsChange}
+            disabled={isRunning}
           />
         </div>
         <div className="flex justify-between items-center">
           <label htmlFor="preparation-seconds">Preparation seconds</label>
           <input
             type="text"
-            className="rounded-md border-0 pl-2 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+            className={classNames(
+              "rounded-md border-0 pl-2 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary",
+              isRunning && "opacity-50 cursor-not-allowed",
+            )}
             id="preparation-seconds"
             defaultValue={preparationSeconds}
             onChange={handlePreparationSecondsChange}
+            disabled={isRunning}
           />
         </div>
         <div className="flex justify-between items-center">
