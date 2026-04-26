@@ -21,9 +21,10 @@ export default function Controls({
   onSettingsOpen,
 }: Props) {
   const controlsContainerClasses = classNames(
+    "fixed inset-x-0 bottom-20 z-10 flex justify-center",
     "transition-opacity",
     "duration-500",
-    { "opacity-0": !isControlsVisible, "opacity-100": isControlsVisible }
+    { "opacity-0": !isControlsVisible, "opacity-100": isControlsVisible },
   );
 
   const handleStartStopClick = () => {
@@ -37,7 +38,7 @@ export default function Controls({
   return (
     <>
       <div className={controlsContainerClasses}>
-        <div className="flex justify-center items-center space-x-2 mb-2">
+        <div className="flex items-center space-x-2">
           <Button className="mr-2" onClick={handleStartStopClick}>
             {isRunning ? "Stop" : "Start"}
           </Button>
