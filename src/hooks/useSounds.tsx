@@ -9,6 +9,22 @@ export default function useSounds(
 ) {
   const totalSeconds = Math.ceil(timeLeft / 1000);
   const prevSeconds = useRef(totalSeconds);
+  const prevEnabled = useRef(isEnabled);
+  const hasMounted = useRef(false);
+
+  useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      prevEnabled.current = isEnabled;
+      return;
+    }
+
+    if (isEnabled && !prevEnabled.current) {
+      playDing();
+    }
+
+    prevEnabled.current = isEnabled;
+  }, [isEnabled]);
 
   useEffect(() => {
     if (!isEnabled) return;
