@@ -3,13 +3,30 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 type Props = {
-  title: string;
   children: ReactNode;
   isOpen: boolean;
   onClose: () => void;
 };
 
-export default function SlideOver({ title, isOpen, onClose, children }: Props) {
+type SectionProps = {
+  title: string;
+  children: ReactNode;
+};
+
+export const SlideOverSection = ({ title, children }: SectionProps) => {
+  return (
+    <div>
+      <div className="px-4 sm:px-6">
+        <Dialog.Title className="text-base font-semibold leading-6 text-text">
+          {title}
+        </Dialog.Title>
+      </div>
+      <div className="relative mt-6 px-4 sm:px-6 text-text">{children}</div>
+    </div>
+  );
+};
+
+export default function SlideOver({ isOpen, onClose, children }: Props) {
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -60,14 +77,7 @@ export default function SlideOver({ title, isOpen, onClose, children }: Props) {
                     </div>
                   </Transition.Child>
                   <div className="flex h-full flex-col overflow-y-scroll bg-background py-6 shadow-xl">
-                    <div className="px-4 sm:px-6">
-                      <Dialog.Title className="text-base font-semibold leading-6 text-text">
-                        {title}
-                      </Dialog.Title>
-                    </div>
-                    <div className="relative mt-6 flex-1 px-4 sm:px-6 text-text">
-                      {children}
-                    </div>
+                    <div className="flex-1 space-y-10">{children}</div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
