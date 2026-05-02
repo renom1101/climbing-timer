@@ -118,7 +118,7 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
               id="climbing-seconds"
               className={classNames(
                 "rounded-md border-0 pl-2 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary",
-                isRunning && "opacity-50 cursor-not-allowed",
+                isRunning && "text-gray-500 cursor-not-allowed",
               )}
               defaultValue={climbSeconds}
               onChange={handleClimbSecondsChange}
@@ -131,7 +131,7 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
               type="text"
               className={classNames(
                 "rounded-md border-0 pl-2 py-1.5 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary",
-                isRunning && "opacity-50 cursor-not-allowed",
+                isRunning && "text-gray-500 cursor-not-allowed",
               )}
               id="preparation-seconds"
               defaultValue={preparationSeconds}
