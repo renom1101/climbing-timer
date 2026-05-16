@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Climbing Timer Help</title>
+    <script>
+      (function () {
+        try {
+          var savedMode = localStorage.getItem("isDarkModeEnabled");
+          if (savedMode === "true") {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (error) {
+          // Ignore storage access errors and keep default mode.
+        }
+      })();
+    </script>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        margin: 0;
+        font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        background: #ffffff;
+        color: #111111;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 32px 20px 56px;
+      }
+      h1 {
+        font-size: 1.9rem;
+        margin: 0 0 12px;
+      }
+      h2 {
+        font-size: 1.25rem;
+        margin: 28px 0 8px;
+      }
+      p {
+        margin: 0 0 12px;
+      }
+      ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+      li {
+        margin-bottom: 6px;
+      }
+      a {
+        color: inherit;
+      }
+      .link {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .note {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: #f5f5f5;
+      }
+      .card {
+        margin-top: 12px;
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid #e0e0e0;
+        background: #fafafa;
+      }
+      .card ul {
+        margin: 8px 0 0;
+      }
+      .dark {
+        color-scheme: dark;
+      }
+      .dark body {
+        background: #050505;
+        color: #f2f2f2;
+      }
+      .dark .note {
+        background: #1a1a1a;
+      }
+      .dark .card {
+        border-color: #2a2a2a;
+        background: #121212;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Climbing Timer Help</h1>
+      <p>
+        Climbing Timer is designed for climbing competitions, competition
+        simulations, and similar sessions. It follows official IFSC timing
+        guidance.
+      </p>
+
+      <h2 id="start-stop">Start and stop</h2>
+      <ul>
+        <li>Press <strong>Start</strong> to begin.</li>
+        <li>Press <strong>Stop</strong> to pause.</li>
+        <li>Press <strong>Start</strong> again to continue.</li>
+        <li>
+          Press <strong>Reset</strong> to return to the full climbing time.
+        </li>
+      </ul>
+
+      <h2 id="timer-run">How the timer runs</h2>
+      <ul>
+        <li>The timer counts down the climbing time.</li>
+        <li>
+          If <strong>Preparation time</strong> is on, a preparation phase
+          follows each climb.
+        </li>
+        <li>The timer keeps looping through the phases until you stop it.</li>
+        <li>
+          Controls fade while the timer is running. Move the mouse or tap the
+          screen to show them again.
+        </li>
+      </ul>
+
+      <h2 id="timer-settings">Timer settings</h2>
+      <ul>
+        <li>
+          <strong>Preparation time</strong> turns the prep phase on or off.
+        </li>
+        <li>
+          <strong>Climbing seconds</strong> sets the climbing phase length.
+        </li>
+        <li>
+          <strong>Preparation seconds</strong> sets the preparation phase
+          length.
+        </li>
+      </ul>
+      <p class="note">
+        You cannot change timing settings while the timer is running.
+      </p>
+
+      <h2 id="general-settings">General settings</h2>
+      <ul>
+        <li>
+          <strong>Dark mode</strong> switches between light and dark themes.
+        </li>
+      </ul>
+      <p class="note">
+        Viewers do not see settings on a shared timer link. To change dark mode,
+        open your own timer, switch <strong>Dark mode</strong>, then return to
+        the shared link. The choice stays on your device and does not affect
+        anyone else.
+      </p>
+
+      <h2 id="share">Share the timer</h2>
+      <ul>
+        <li>Copy the timer link from settings.</li>
+        <li>Anyone with the link can view the timer live.</li>
+        <li>Only the person who created the timer can control it.</li>
+      </ul>
+      <p class="note">
+        You can create only one timer per device at a time. If you need a second
+        timer, use another device or browser.
+      </p>
+
+      <h2 id="sounds">Sounds</h2>
+      <ul>
+        <li>A short <strong>ding</strong> plays when you start or resume.</li>
+        <li>Dings play for the last five seconds.</li>
+        <li>A <strong>dong</strong> plays when the phase changes.</li>
+      </ul>
+
+      <h2 id="feedback">Leave feedback</h2>
+      <div class="card">
+        <p>
+          We would love your feedback on how the competition timer worked for
+          you.
+        </p>
+        <p>
+          <a
+            class="link"
+            href="https://renatzaicev.typeform.com/to/ziPxGiin"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open the feedback form
+          </a>
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

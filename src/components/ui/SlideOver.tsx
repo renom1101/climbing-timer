@@ -2,6 +2,8 @@ import { Fragment, ReactNode } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
+import HelpLink from "./HelpLink";
+
 type Props = {
   children: ReactNode;
   isOpen: boolean;
@@ -11,15 +13,27 @@ type Props = {
 type SectionProps = {
   title: string;
   children: ReactNode;
+  helpLabel?: string;
+  helpSectionId?: string;
 };
 
-export const SlideOverSection = ({ title, children }: SectionProps) => {
+export const SlideOverSection = ({
+  title,
+  children,
+  helpLabel,
+  helpSectionId,
+}: SectionProps) => {
   return (
     <div>
       <div className="px-4 sm:px-6">
-        <Dialog.Title className="text-base font-semibold leading-6 text-text">
-          {title}
-        </Dialog.Title>
+        <div className="flex items-center gap-2">
+          <Dialog.Title className="text-base font-semibold leading-6 text-text">
+            {title}
+          </Dialog.Title>
+          {helpSectionId !== undefined && (
+            <HelpLink sectionId={helpSectionId} label={helpLabel} />
+          )}
+        </div>
       </div>
       <div className="relative mt-6 px-4 sm:px-6 text-text">{children}</div>
     </div>

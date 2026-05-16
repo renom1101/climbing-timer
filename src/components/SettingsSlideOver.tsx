@@ -31,6 +31,7 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
     typeof window === "undefined"
       ? ""
       : window.location.href.replace(/^https?:\/\//, "");
+  const feedbackLink = "https://renatzaicev.typeform.com/to/ziPxGiin";
   const timerLinkRef = useRef<HTMLInputElement | null>(null);
   const timerLinkResetTimeout = useRef<ReturnType<typeof setTimeout> | null>(
     null,
@@ -94,7 +95,11 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
 
   return (
     <SlideOver isOpen={isOpen} onClose={onClose}>
-      <SlideOverSection title="Timer Settings">
+      <SlideOverSection
+        title="Timer Settings"
+        helpSectionId="timer-settings"
+        helpLabel="Open help for timer settings"
+      >
         <div className="space-y-2 text-sm">
           {isRunning && (
             <Alert
@@ -141,7 +146,11 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
           </div>
         </div>
       </SlideOverSection>
-      <SlideOverSection title="General Settings">
+      <SlideOverSection
+        title="General Settings"
+        helpSectionId="general-settings"
+        helpLabel="Open help for general settings"
+      >
         <div className="space-y-2 text-sm">
           <div className="flex justify-between items-center">
             <label>Dark mode</label>
@@ -152,7 +161,11 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
           </div>
         </div>
       </SlideOverSection>
-      <SlideOverSection title="Share this timer">
+      <SlideOverSection
+        title="Share this timer"
+        helpSectionId="share"
+        helpLabel="Open help for sharing"
+      >
         <div className="space-y-2 text-sm">
           <div className="mt-2 grid grid-cols-1">
             <input
@@ -201,6 +214,21 @@ const SettingsSlideOver = ({ isOpen, onClose }: Props) => {
               </span>
             </button>
           </div>
+        </div>
+      </SlideOverSection>
+      <SlideOverSection
+        title="Feedback"
+      >
+        <div className="space-y-2 text-sm">
+          <p>Share how the timer worked and what we could improve.</p>
+          <a
+            href={feedbackLink}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center text-text underline underline-offset-2 hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            Open feedback form
+          </a>
         </div>
       </SlideOverSection>
     </SlideOver>
