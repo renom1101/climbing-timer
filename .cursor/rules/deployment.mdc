@@ -1,0 +1,26 @@
+---
+description: Branch-to-environment deployment mapping and CI behavior
+globs: .github/workflows/**,firebase.json,.firebaserc
+alwaysApply: false
+---
+
+# Deployment
+
+| Branch / event       | Target                              |
+| -------------------- | ----------------------------------- |
+| Push to `master`     | prod (`climbing-timer-3f18c`)       |
+| Push to `beta`       | beta site                           |
+| Pull request         | Firebase preview channel (30 days)  |
+
+All deploys run:
+
+```bash
+pnpm install --frozen-lockfile && pnpm build && firebase deploy
+```
+
+CI config lives in `.github/workflows/`. When changing deploy flow, update
+**both** the relevant workflow file *and* `firebase.json` targets — they must
+stay in sync or deploys will land in the wrong project.
+
+`pnpm build` includes `tsc` and **`pnpm lint` fails on any warning**, so
+preview deploys will fail if lint is dirty. Fix lint locally before pushing.

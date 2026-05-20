@@ -1,0 +1,36 @@
+---
+description: Timer is computed from timestamps, not ticked; pause encoding rules
+globs: src/hooks/useTimer.tsx,src/data/supabase/timers.ts,src/data/supabase/types.ts
+alwaysApply: false
+---
+
+# Time Is Computed, Not Ticked
+
+The only persisted time fields are:
+
+- `startTimestamp` — server ms when the current run started
+- `updated_at_ms` — server ms when the row last changed
+
+`useTimer.tsx` recomputes `timeLeft` every **16ms** from:
+
+```ts
+const elapsedMs = (updatedAtMs - startTimestamp) + (now - updatedAtMs);
+const positionInCycle = elapsedMs % cycleDurationMs; // prep + climb
+```
+
+The timer **auto-loops** — there is no "duration" field. Don't add one; derive
+the current phase from `elapsed % cycleDurationMs`.
+
+## Pause encoding
+
+Pause is represented by `stopTimeMilliseconds != null` (frozen remaining time
+in the current phase). Resume reconstructs a **new** `startTimestamp` such
+that `now - startTimestamp` equals the elapsed-at-pause:
+
+```ts
+// Resume: shift startTimestamp forward by the paused duration
+const newStart = getAdjustedNow() - elapsedAtPause;
+```
+
+Don't introduce a separate "isPaused" boolean — the presence/absence of
+`stopTimeMilliseconds` is the single source of truth for pause state.

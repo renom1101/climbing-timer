@@ -4,10 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-- `npm run dev` — start Vite dev server
-- `npm run build` — type-check (`tsc`) and build for production
-- `npm run lint` — ESLint over `.ts`/`.tsx`, fails on any warning
-- `npm run preview` — preview built bundle
+This project uses **pnpm** (not npm or yarn).
+
+- `pnpm dev` — start Vite dev server
+- `pnpm build` — type-check (`tsc`) and build for production
+- `pnpm lint` — ESLint over `.ts`/`.tsx`, fails on any warning
+- `pnpm preview` — preview built bundle
+- `pnpm install` — install dependencies (use `pnpm add <pkg>` to add new ones)
 
 There is no test suite. Requires a `.env.local` populated from `.env.example` (Firebase + Supabase credentials) to run.
 
@@ -43,4 +46,4 @@ Clients call the `get_server_time_ms` RPC, do 8 samples, keep the 4 with lowest 
 
 ## Deployment
 
-Pushes to `master` → prod (`climbing-timer-3f18c`); pushes to `beta` → beta site; PRs get a 30-day Firebase preview channel. All deploys run `npm ci && npm run build` then `firebase deploy`. CI configuration lives in [.github/workflows/](.github/workflows/).
+Pushes to `master` → prod (`climbing-timer-3f18c`); pushes to `beta` → beta site; PRs get a 30-day Firebase preview channel. All deploys run `pnpm install --frozen-lockfile && pnpm build` then `firebase deploy`. CI configuration lives in [.github/workflows/](.github/workflows/).

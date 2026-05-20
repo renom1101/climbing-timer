@@ -1,0 +1,46 @@
+---
+description: Supabase realtime timer sync, owner/viewer split, no-echo-loop invariant
+globs: src/hooks/useTimer*.tsx,src/components/Main.tsx,src/data/supabase/**
+alwaysApply: false
+---
+
+# Realtime Timer Invariants
+
+Source of truth = **one row** in the `timers` table (`src/data/supabase/types.ts`).
+Every client subscribes to realtime `UPDATE` events and **mirrors** DB state
+into local React state.
+
+## Owner vs viewer
+
+```ts
+const isTimerOwner = timer.host_id === userId;
+```
+
+Only the **owner** writes to the DB. Viewers are read-only — `Main.tsx` renders
+just `<TimerDisplay>` for them. Never gate writes on anything other than this
+ownership check.
+
+## No echo loop — critical invariant
+
+DB writes happen **only** from user-action handlers
+(`startTimer` / `stopTimer` / `resetTimer` and the setting updaters).
+
+The mirror `useEffect` in `useTimer.tsx` reads DB state into local state and
+**must never write back**. Realtime events arriving from our own writes would
+otherwise re-trigger writes and loop forever.
+
+```tsx
+// ❌ BAD — mirror effect writes back
+useEffect(() => {
+  setLocalState(timer);
+  if (timer.startTimestamp) updateTimerState({ ... }); // loop!
+}, [timer]);
+
+// ✅ GOOD — mirror is read-only
+useEffect(() => {
+  setLocalState(timer);
+}, [timer]);
+```
+
+When adding new timer fields, route writes through existing user-action
+handlers — don't add reactive writes inside subscription/mirror effects.

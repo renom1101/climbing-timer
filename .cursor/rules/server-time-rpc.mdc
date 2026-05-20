@@ -1,0 +1,29 @@
+---
+description: Timer writes go through the update_timer_with_server_time RPC
+globs: src/hooks/useSettingsState.tsx,src/hooks/useTimer.tsx,src/data/supabase/timers.ts
+alwaysApply: false
+---
+
+# Writes Go Through the Server-Time RPC
+
+`updateTimerState` calls the **`update_timer_with_server_time` RPC**, not a
+plain table `update`. The RPC sets `updated_at_ms` from the DB's clock, so all
+clients agree on when the change happened — even if their local clocks drift.
+
+```ts
+// ❌ BAD — client clock leaks into updated_at_ms
+await supabase.from('timers').update({ start_timestamp: now }).eq('id', id);
+
+// ✅ GOOD — server stamps updated_at_ms
+await supabase.rpc('update_timer_with_server_time', { ... });
+```
+
+## Optimistic local update
+
+The client sets `updatedAtMs` **optimistically** using `getAdjustedNow()` so
+the UI updates immediately, then lets the realtime event arrive and correct
+it. Don't await the RPC before updating local state — that adds a perceptible
+lag on slow networks.
+
+When adding a new timer field that should sync, extend this RPC (and its DB
+function) rather than introducing a second write path.

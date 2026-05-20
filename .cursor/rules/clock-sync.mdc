@@ -1,0 +1,27 @@
+---
+description: Use getAdjustedNow() instead of Date.now() for timer-related code
+globs: src/hooks/**/*.tsx,src/data/supabase/**/*.ts,src/components/**/*.tsx
+alwaysApply: false
+---
+
+# Clock Sync — Use `getAdjustedNow()`
+
+Clients sync to server time via the `get_server_time_ms` RPC: 8 samples, keep
+the 4 with lowest RTT, use the **median offset** (see
+`src/data/supabase/server-time.ts`). Offset is refreshed every 60s.
+
+**Anywhere timer state is computed or written, use `getAdjustedNow()`** instead
+of `Date.now()`. The drift between two browsers can be hundreds of ms — using
+`Date.now()` on the client makes timers visibly desync.
+
+```ts
+// ❌ BAD — uses raw client clock
+const startTimestamp = Date.now();
+
+// ✅ GOOD — server-aligned
+import { getAdjustedNow } from '../data/supabase/server-time';
+const startTimestamp = getAdjustedNow();
+```
+
+`Date.now()` is fine for non-timer concerns (logging, throttling, UI animation
+timestamps that don't affect synced state).

@@ -1,0 +1,39 @@
+---
+description: High-level project overview, commands, and environment setup
+alwaysApply: true
+---
+
+# Climbing Timer
+
+Single-page **React + TypeScript + Vite** app — a climbing interval timer that
+syncs across clients in realtime via **Supabase**. Hosted on **Firebase
+Hosting** (`master` → prod, `beta` → beta site, PRs → 30-day preview channel).
+
+## Commands
+
+This project uses **pnpm** — not npm or yarn. Always use `pnpm` for installs
+and scripts.
+
+- `pnpm dev` — Vite dev server
+- `pnpm build` — `tsc` type-check + production build
+- `pnpm lint` — ESLint over `.ts`/`.tsx`; **fails on any warning**
+- `pnpm preview` — preview built bundle
+- `pnpm install` — install dependencies (use `pnpm add <pkg>` to add new ones)
+
+There is **no test suite**. Don't write/run tests unless the user asks.
+
+## Environment
+
+Requires `.env.local` populated from `.env.example` (Firebase + Supabase
+credentials) for the app to run.
+
+## Architecture map
+
+- Timer state: `src/hooks/useTimer.tsx` + `src/data/supabase/`
+- Settings state: `src/hooks/useSettingsState.tsx` + `src/contexts/settings.tsx`
+- Server time / clock sync: `src/data/supabase/server-time.ts`
+- Anonymous auth: `src/hooks/useSession.tsx`
+- UI shell: `src/components/Main.tsx`, `src/components/TimerDisplay.tsx`
+
+The URL path **is** the timer id: `/<timer-id>` joins that timer
+(`window.location.pathname.substring(1)`).

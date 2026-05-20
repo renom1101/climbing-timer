@@ -1,0 +1,43 @@
+---
+description: Settings ownership, SettingsContext, and localStorage caching
+globs: src/hooks/useSettings*.tsx,src/contexts/settings.tsx,src/components/SettingsSlideOver.tsx
+alwaysApply: false
+---
+
+# Settings Flow
+
+`useSettingsState.tsx` owns **all** timer + UI settings and exposes them via
+`SettingsContext` (`src/contexts/settings.tsx`). Components read settings via
+the `useSettings()` hook — never reach into the state hook directly or
+duplicate setting state in component-local `useState`.
+
+```tsx
+// ❌ BAD — bypasses context, duplicates state
+const [climbSeconds, setClimbSeconds] = useState(30);
+
+// ✅ GOOD — single source of truth
+const { climbSeconds, setClimbSeconds } = useSettings();
+```
+
+## localStorage cache (fast first paint)
+
+These settings are cached in `localStorage` for fast first paint, then
+**overwritten** by DB values after `getTimers()` resolves:
+
+- `climbSeconds`
+- `prepSeconds`
+- `prepEnabled`
+- `darkMode`
+
+When adding a new timer-affecting setting:
+
+1. Write to Supabase (via the server-time RPC) — DB is source of truth.
+2. Cache in `localStorage` for first paint.
+3. Expose through `SettingsContext`.
+
+## Dark mode is the exception
+
+Dark mode is the **only** setting that stays purely client-side. It's cached
+in `localStorage` and never written to Supabase. Don't add new client-only
+settings without an explicit reason — sync-by-default keeps shared timers
+predictable across devices.
